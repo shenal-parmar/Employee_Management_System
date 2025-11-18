@@ -1,0 +1,7 @@
+login
+login url 
+==========
+find name in user and then in emp
+if found then match password else give errir
+after password assign token 
+if auth context then verify token 
