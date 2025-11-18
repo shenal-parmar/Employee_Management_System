@@ -2,13 +2,15 @@ import axios from "axios";
 import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {  userContext } from "../context/AuthContext.jsx";
-
+const api = axios.create({
+  baseURL: `${import.meta.env.VITE_API_URL?.replace(/\/$/, '')}/api`,
+});
 
 // Refactored function for testing
 export const submitLogin = async ({ email, password }) => {
   
   try {
-    const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/users/login`, { email, password });
+    const res = await api.post(`/users/login`, { email, password });
     if (res.data.success) return res.data;
     else throw new Error("Login failed");
   } catch (err) {

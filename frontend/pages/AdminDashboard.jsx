@@ -17,7 +17,9 @@ import {
 import { format } from "date-fns";
 import { Link } from "react-router-dom";
 import axios from "axios";
-
+const api = axios.create({
+  baseURL: `${import.meta.env.VITE_API_URL?.replace(/\/$/, '')}/api`,
+});
 export default function AdminDashboard() {
   const [user, setUser] = useState(null);
 
@@ -34,8 +36,8 @@ export default function AdminDashboard() {
     queryKey: ["employees"],
     queryFn: async () => {
       try {
-        const res = await axios.get(
-          `${import.meta.env.VITE_BACKEND_URL}/employees`
+        const res = await api.get(
+          `/employees`
         );
         return res.data || [];
       } catch (err) {
@@ -49,8 +51,8 @@ export default function AdminDashboard() {
     queryKey: ["departments"],
     queryFn: async () => {
       try {
-        const res = await axios.get(
-          `${import.meta.env.VITE_BACKEND_URL}/departments`
+        const res = await api.get(
+          `/departments`
         );
         return res.data || [];
       } catch (err) {
@@ -64,8 +66,8 @@ export default function AdminDashboard() {
     queryKey: ["leaves"],
     queryFn: async () => {
       try {
-        const res = await axios.get(
-          `${import.meta.env.VITE_BACKEND_URL}/leaves`
+        const res = await api.get(
+          `/leaves`
         );
         return res.data || [];
       } catch (err) {
@@ -79,8 +81,8 @@ export default function AdminDashboard() {
     queryKey: ["salaries"],
     queryFn: async () => {
       try {
-        const res = await axios.get(
-          `${import.meta.env.VITE_BACKEND_URL}/salaries`
+        const res = await api.get(
+          `/salaries`
         );
         return res.data || [];
       } catch (err) {

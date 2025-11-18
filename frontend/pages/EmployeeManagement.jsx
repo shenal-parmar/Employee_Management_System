@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { FaSearch, FaPlus, FaUserAlt } from "react-icons/fa";
-
+const api = axios.create({
+  baseURL: `${import.meta.env.VITE_API_URL?.replace(/\/$/, '')}/api`,
+});
 export default function EmployeeManagement() {
   const [employees, setEmployees] = useState([]);
   const [departments, setDepartments] = useState([]);
@@ -24,7 +26,7 @@ export default function EmployeeManagement() {
   useEffect(() => {
     const fetchDepartments = async () => {
       try {
-        const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/departments`);
+        const res = await api.get(`/departments`);
         setDepartments(res.data);
       } catch (err) {
         console.error("Error fetching departments:", err);
@@ -37,7 +39,7 @@ export default function EmployeeManagement() {
   useEffect(() => {
     const fetchEmployees = async () => {
       try {
-        const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/employees`);
+        const res = await api.get(`/employees`);
         setEmployees(res.data);
       } catch (err) {
         console.error("Error fetching employees:", err);
@@ -66,15 +68,15 @@ export default function EmployeeManagement() {
     e.preventDefault();
     try {
       if (editing) {
-        await axios.put(
-          `${import.meta.env.VITE_BACKEND_URL}/employees/${editing._id}`,
+        await api.put(
+          `/employees/${editing._id}`,
           formData
         );
       } else {
-        await axios.post(`${import.meta.env.VITE_BACKEND_URL}/employees`, formData);
+        await api.post(`/employees`, formData);
       }
 
-      const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/employees`);
+      const res = await api.get(`/employees`);
       setEmployees(res.data);
       setShowForm(false);
       resetForm();

@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { FaUsers, FaBuilding, FaCalendarAlt, FaMoneyBillWave, FaDownload, FaChartLine } from "react-icons/fa";
-
+const api = axios.create({
+  baseURL: `${import.meta.env.VITE_API_URL?.replace(/\/$/, '')}/api`,
+});
 export default function Reports() {
   const [employees, setEmployees] = useState([]);
   const [departments, setDepartments] = useState([]);
@@ -15,10 +17,10 @@ export default function Reports() {
     const fetchData = async () => {
       try {
         const [empRes, depRes, leaveRes, salRes] = await Promise.all([
-          axios.get(`${API}/employees`),
-          axios.get(`${API}/departments`),
-          axios.get(`${API}/leaves`),
-          axios.get(`${API}/salaries`)
+          api.get(`/employees`),
+          api.get(`/departments`),
+          api.get(`/leaves`),
+          api.get(`/salaries`)
         ]);
         setEmployees(empRes.data);
         setDepartments(depRes.data);

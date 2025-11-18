@@ -3,7 +3,9 @@ import { getCurrentUser } from "../src/api/userApi";
 import { FaUserCircle, FaEnvelope, FaPhone, FaBuilding } from "react-icons/fa";
 import { useAuth } from "../context/AuthContext"; // <-- import Auth context
 import { useParams, useNavigate } from "react-router-dom"; // if route has userId
-
+const api = axios.create({
+  baseURL: `${import.meta.env.VITE_API_URL?.replace(/\/$/, '')}/api`,
+});
 export default function Profile() {
   const [user, setUser] = useState(null);
   const { user: loggedInUser, Loading } = useAuth(); // from AuthContext

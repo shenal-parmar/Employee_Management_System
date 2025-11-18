@@ -1,6 +1,8 @@
 // ProtectedRoute.jsx
 import { Navigate } from "react-router-dom";
-
+const api = axios.create({
+  baseURL: `${import.meta.env.VITE_API_URL?.replace(/\/$/, '')}/api`,
+});
 export default function ProtectedRoute({ role, children }) {
   const token = localStorage.getItem("token");
   const userRole = localStorage.getItem("userRole");

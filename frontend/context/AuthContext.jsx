@@ -19,7 +19,7 @@ const AuthContext = ({ children }) => {
     }
 
     try {
-      const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/auth/verify`, {
+      const res = await api.get(`/auth/verify`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (res.data.success) setuser(res.data.user);

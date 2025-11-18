@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { FaSearch, FaPlus } from "react-icons/fa";
-
+const api = axios.create({
+  baseURL: `${import.meta.env.VITE_API_URL?.replace(/\/$/, '')}/api`,
+});
 export default function LeaveManagement({ userRole = "admin", employeeData }) {
   const [leaves, setLeaves] = useState([]);
   const [employees, setEmployees] = useState([]);
@@ -25,7 +27,7 @@ export default function LeaveManagement({ userRole = "admin", employeeData }) {
   // Fetch leaves
   const fetchLeaves = async () => {
     try {
-      const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/leaves`);
+      const res = await api.get(`/leaves`);
       // Map or normalize if backend uses nested emp_id etc.
       const mapped = res.data.map((l) => ({
         ...l,
@@ -43,8 +45,8 @@ export default function LeaveManagement({ userRole = "admin", employeeData }) {
   // Fetch employees for admin dropdown and prefill for employee role
   useEffect(() => {
     if (userRole === "admin") {
-      axios
-        .get(`${import.meta.env.VITE_BACKEND_URL}/employees`)
+      api
+        .get(`/employees`)
         .then((res) => setEmployees(res.data))
         .catch((err) => console.error("Error fetching employees:", err));
     } else if (employeeData) {
@@ -142,9 +144,9 @@ export default function LeaveManagement({ userRole = "admin", employeeData }) {
       };
 
       if (editing) {
-        await axios.put(`${import.meta.env.VITE_BACKEND_URL}/leaves/${editing._id}`, payload);
+        await api.put(`/leaves/${editing._id}`, payload);
       } else {
-        await axios.post(`${import.meta.env.VITE_BACKEND_URL}/leaves`, payload);
+        await api.post(`/leaves`, payload);
       }
 
       await fetchLeaves();
@@ -175,7 +177,7 @@ export default function LeaveManagement({ userRole = "admin", employeeData }) {
   // Status change (admin only)
   const handleStatusChange = async (leave, newStatus) => {
     try {
-      await axios.put(`${import.meta.env.VITE_BACKEND_URL}/leaves/${leave._id}`, {
+      await api.put(`/leaves/${leave._id}`, {
         ...leave,
         status: newStatus,
       });

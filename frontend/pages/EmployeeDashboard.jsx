@@ -12,7 +12,9 @@ import {
 import { format } from "date-fns";
 import axios from "axios";
 const BACKEND_URL = `${import.meta.env.VITE_BACKEND_URL}`;
-
+const api = axios.create({
+  baseURL: `${import.meta.env.VITE_API_URL?.replace(/\/$/, '')}/api`,
+});
 export default function EmployeeDashboard() {
   const [user, setUser] = useState(null);
   const id = localStorage.getItem("user");
@@ -31,7 +33,7 @@ export default function EmployeeDashboard() {
   const { data: leaves = [] } = useQuery({
     queryKey: ["myLeaves"],
     queryFn: async () => {
-      const res = await axios.get(`${BACKEND_URL}/leaves/my-leaves/${id}`);
+      const res = await api.get(`/leaves/my-leaves/${id}`);
       return res.data || [];
     },
   });
@@ -41,8 +43,8 @@ export default function EmployeeDashboard() {
     queryKey: ["mySalaries"],
     queryFn: async () => {
       try {
-        const res = await axios.get(
-          `${import.meta.env.VITE_BACKEND_URL}/salaries/my-salary/${id}`
+        const res = await api.get(
+          `/salaries/my-salary/${id}`
         );
         // console.log("salary :",res);f
 
@@ -87,7 +89,7 @@ export default function EmployeeDashboard() {
   });
   const submitLeave = async () => {
     try {
-      await axios.post(`${BACKEND_URL}/leaves`, {
+      await api.post(`/leaves`, {
         emp_id: id,
         employee_name: user?.name,
         leave_type: form.leave_type,

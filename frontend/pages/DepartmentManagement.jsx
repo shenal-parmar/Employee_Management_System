@@ -9,15 +9,16 @@ export default function DepartmentManagement() {
   const [selectedDept, setSelectedDept] = useState(null);
   const [formData, setFormData] = useState({ name: "", description: "" });
   const [loading, setLoading] = useState(true);
-
+const api = axios.create({
+  baseURL: `${import.meta.env.VITE_API_URL?.replace(/\/$/, '')}/api`,
+});
   // ✅ Fetch Departments & Employees
   useEffect(() => {
     const fetchData = async () => {
       try {
         const [deptRes, empRes] = await Promise.all([
-          axios.get(`http://localhost:3000/api/departments`),
-          // axios.get(`${BACKEND_URL}/departments`),
-          axios.get("http://localhost:3000/api/employees"),
+          api.get(`/departments`),
+          api.get("/employees"),
         ]);
         setDepartments(deptRes.data);
         setEmployees(empRes.data);
@@ -34,7 +35,7 @@ export default function DepartmentManagement() {
   }, []);
 
   const fetchDepartments = async () => {
-    const res = await axios.get("http://localhost:3000/api/departments");
+    const res = await api.get("/departments");
     setDepartments(res.data);
   };
 
@@ -43,12 +44,12 @@ export default function DepartmentManagement() {
     e.preventDefault();
     try {
       if (selectedDept) {
-        await axios.put(
-          `http://localhost:3000/api/departments/${selectedDept._id}`,
+        await api.put(
+          `/departments/${selectedDept._id}`,
           formData
         );
       } else {
-        await axios.post("http://localhost:3000/api/departments", formData);
+        await api.post("/departments", formData);
       }
       fetchDepartments();
       resetForm();
@@ -69,7 +70,7 @@ export default function DepartmentManagement() {
 
     if (confirm("Are you sure you want to delete this department?")) {
       try {
-        await axios.delete(`http://localhost:3000/api/departments/${id}`);
+        await api.delete(`/departments/${id}`);
         fetchDepartments();
       } catch (err) {
         console.error("Error deleting department:", err);
