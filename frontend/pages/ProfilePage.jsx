@@ -3,6 +3,7 @@ import { getCurrentUser } from "../src/api/userApi";
 import { FaUserCircle, FaEnvelope, FaPhone, FaBuilding } from "react-icons/fa";
 import { useAuth } from "../context/AuthContext"; // <-- import Auth context
 import { useParams, useNavigate } from "react-router-dom"; // if route has userId
+import axios from "axios";
 const api = axios.create({
   baseURL: `${import.meta.env.VITE_API_URL?.replace(/\/$/, '')}/api`,
 });

@@ -3,7 +3,9 @@ import { useContext, useEffect } from "react";
 import { useState } from "react";
 import { createContext } from "react";
 import Login from "../pages/Login";
-
+const api = axios.create({
+  baseURL: `${import.meta.env.VITE_API_URL?.replace(/\/$/, '')}/api`,
+});
 export const userContext = createContext();
 const AuthContext = ({ children }) => {
   const [user, setuser] = useState();
