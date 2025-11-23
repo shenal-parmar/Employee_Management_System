@@ -6,7 +6,7 @@ const api = axios.create({
 });
 // store token after login
 export const loginUser = async (email, password) => {
-  const res = await api.post(`${API_URL}/users/login`, { email, password });
+  const res = await api.post(`/users/login`, { email, password });
   localStorage.setItem("token", res.data.token);
   return res.data.user;
 };
@@ -17,7 +17,7 @@ export const getCurrentUser = async () => {
   console.log(token);
   
 
-  const res = await api.get(`${API_URL}/users/me`, {
+  const res = await api.get(`/users/me`, {
     headers: { Authorization: `Bearer ${token}` },
   });
   return res.data;
