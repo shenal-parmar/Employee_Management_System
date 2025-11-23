@@ -1,10 +1,12 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:3000/api/users";
-
+// const API_URL = "http://localhost:3000/api/users";
+const api = axios.create({
+  baseURL: `${import.meta.env.VITE_API_URL?.replace(/\/$/, '')}/api`,
+});
 // store token after login
 export const loginUser = async (email, password) => {
-  const res = await axios.post(`${API_URL}/login`, { email, password });
+  const res = await api.post(`${API_URL}/users/login`, { email, password });
   localStorage.setItem("token", res.data.token);
   return res.data.user;
 };
@@ -15,7 +17,7 @@ export const getCurrentUser = async () => {
   console.log(token);
   
 
-  const res = await axios.get(`${API_URL}/me`, {
+  const res = await api.get(`${API_URL}/users/me`, {
     headers: { Authorization: `Bearer ${token}` },
   });
   return res.data;
