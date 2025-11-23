@@ -1,19 +1,21 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:3000/api/salaries"; // your backend route
-
+// const API_URL = "http://localhost:3000/api/salaries"; // your backend route
+const api = axios.create({
+  baseURL: `${import.meta.env.VITE_API_URL?.replace(/\/$/, '')}/api`,
+});
 export const getSalaries = async () => {
-  const res = await axios.get(API_URL);
+  const res = await api.get("/salaries");
   return res.data;
 };
 
 export const getEmployees = async () => {
-  const res = await axios.get("http://localhost:3000/api/employees");
+  const res = await api.get("/employees");
   return res.data;
 };
 
 export const createSalary = async (data) => {
-  const res = await axios.post(API_URL, data);
+  const res = await api.post("/salaries", data);
   console.log("salary data:",res);
   
   return res.data;
@@ -22,6 +24,6 @@ export const createSalary = async (data) => {
 export const updateSalary = async (id, data) => {
   console.log("update data :",data);
   
-  const res = await axios.put(`${API_URL}/${id}`, data);
+  const res = await api.put(`/salaries/${id}`, data);
   return res.data;
 };
