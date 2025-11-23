@@ -43,7 +43,7 @@ export default function Navbar() {
 
         {!user && (
           <Link
-            to="/register"
+            to="/employeeRegister"
             className="text-gray-700 hover:text-teal-600 font-medium transition"
           >
             Register

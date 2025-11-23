@@ -17,6 +17,7 @@ import Navbar from "../pages/Navbar";
 import ProfilePage from "../pages/ProfilePage";
 import ProtectedRoute from "../pages/ProtectedRoute";
 import EmployeeDashboard from "../pages/EmployeeDashboard";
+import EmployeeRegister from "../pages/EmployeeRegister";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -58,7 +59,7 @@ function App() {
         ></Route>
         <Route path="/leaves" element={<LeaveManagement />}></Route>
         <Route path="/salaryManagement" element={<SalaryManagement />}></Route>
-        {/* <Route path="/salaryManagement" element={<SalaryManagement />}></Route> */}
+        <Route path="/employeeRegister" element={<EmployeeRegister />}></Route>
         <Route path="/profile" element={<ProfilePage />}></Route>
         <Route path="/profile/:id" element={<ProfilePage />} />
 

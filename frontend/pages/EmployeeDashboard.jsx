@@ -87,24 +87,46 @@ export default function EmployeeDashboard() {
     to_date: "",
     description: "",
   });
-  const submitLeave = async () => {
-    try {
-      await api.post(`/leaves`, {
-        emp_id: id,
-        employee_name: user?.name,
-        leave_type: form.leave_type,
-        from_date: form.from_date,
-        to_date: form.to_date,
-        description: form.description,
-      });
+const submitLeave = async () => {
+  const today = new Date().setHours(0,0,0,0);
+  const from = new Date(form.from_date).setHours(0,0,0,0);
+  const to = new Date(form.to_date).setHours(0,0,0,0);
 
-      alert("Leave request submitted!");
-      setShowForm(false);
-    } catch (err) {
-      console.error("Error submitting leave:", err);
-      alert("Error submitting leave");
-    }
-  };
+  // ❌ From date must not be before today
+  if (from < today) {
+    alert("From date cannot be before today.");
+    return;
+  }
+
+  // ❌ To date must be >= From date
+  if (to < from) {
+    alert("To date must be after or same as From date.");
+    return;
+  }
+
+  // ✅ Calculate number of leave days
+  const days = Math.floor((to - from) / (1000 * 60 * 60 * 24)) + 1;
+
+  try {
+    await api.post(`/leaves`, {
+      emp_id: id,
+      employee_name: user?.name,
+      leave_type: form.leave_type,
+      from_date: form.from_date,
+      to_date: form.to_date,
+      description: form.description,
+      days,
+    });
+
+    alert(`Leave submitted successfully for ${days} day(s)!`);
+    setShowForm(false);
+
+  } catch (err) {
+    console.error("Error submitting leave:", err);
+    alert("Error submitting leave");
+  }
+};
+
 
   return (
     <div className="p-6 md:p-8 space-y-8 bg-gradient-to-br from-gray-50 to-blue-50 min-h-screen">
