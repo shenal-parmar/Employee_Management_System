@@ -25,7 +25,8 @@ function App() {
   return (
     <>
       <Navbar></Navbar>
-
+{/* {localStorage.removeItem("token")
+}{console.log("token: ",localStorage.getItem("token"))} */}
       <Routes>
         <Route path="/" element={<Login />}></Route>
         <Route path="/reports" element={<Reports />}></Route>

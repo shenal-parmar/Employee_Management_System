@@ -1,4 +1,4 @@
-import axios from "axios";
+import api from "../src/api/api.js";
 import  { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { userContext } from "../context/AuthContext.jsx";

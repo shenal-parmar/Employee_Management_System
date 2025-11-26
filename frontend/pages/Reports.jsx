@@ -1,9 +1,6 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { FaUsers, FaBuilding, FaCalendarAlt, FaMoneyBillWave, FaDownload, FaChartLine } from "react-icons/fa";
-const api = axios.create({
-  baseURL: `${import.meta.env.VITE_API_URL?.replace(/\/$/, '')}/api`,
-});
+import api from "../src/api/api.js";
 export default function Reports() {
   const [employees, setEmployees] = useState([]);
   const [departments, setDepartments] = useState([]);

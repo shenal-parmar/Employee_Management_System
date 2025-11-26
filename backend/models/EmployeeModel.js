@@ -30,11 +30,14 @@ const EmployeeSchema = new mongoose.Schema(
       required: true,
       description: "Date of joining",
     },
+
+    // Admin will assign later → NOT required now
     designation: {
       type: String,
-      required: true,
       trim: true,
+      default: null,
     },
+
     salary: {
       type: Number,
       default: 0,
@@ -47,15 +50,14 @@ const EmployeeSchema = new mongoose.Schema(
       type: String,
       enum: ["Single", "Married", "Divorced", "Widowed"],
     },
-    department_id: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Department",
-    },
+
+    // Admin will assign later → NOT required now
     department: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Department",
-      required: true,
+      default: null,
     },
+
     phone: {
       type: String,
     },
@@ -64,6 +66,17 @@ const EmployeeSchema = new mongoose.Schema(
     },
     profile_image: {
       type: String,
+    },
+
+    // NEW FIELD to track registration approval
+    status: {
+      type: String,
+      enum: ["pending", "approved"],
+      default: "pending",
+    },
+    isAdmin: {
+      type: Boolean,
+      default: false,
     },
   },
   { timestamps: true }

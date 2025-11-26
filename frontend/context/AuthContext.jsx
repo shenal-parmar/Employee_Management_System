@@ -6,6 +6,14 @@ import Login from "../pages/Login";
 const api = axios.create({
   baseURL: `${import.meta.env.VITE_API_URL?.replace(/\/$/, '')}/api`,
 });
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem("token");
+    // console.log("TOKEN SENDING → ", token);
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
 export const userContext = createContext();
 const AuthContext = ({ children }) => {
   const [user, setuser] = useState();
@@ -13,13 +21,14 @@ const AuthContext = ({ children }) => {
   console.log("authcontext called");
  useEffect(() => {
   const verifyToken = async () => {
+    // console.log("token in verify b4:",token);
     const token = localStorage.getItem("token");
+    // console.log("token in verify:",token);
     if (!token) {
       setuser(null);
       setLoading(false);
       return;
     }
-
     try {
       const res = await api.get(`/auth/verify`, {
         headers: { Authorization: `Bearer ${token}` },

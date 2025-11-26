@@ -3,10 +3,7 @@ import { getCurrentUser } from "../src/api/userApi";
 import { FaUserCircle, FaEnvelope, FaPhone, FaBuilding } from "react-icons/fa";
 import { useAuth } from "../context/AuthContext"; // <-- import Auth context
 import { useParams, useNavigate } from "react-router-dom"; // if route has userId
-import axios from "axios";
-const api = axios.create({
-  baseURL: `${import.meta.env.VITE_API_URL?.replace(/\/$/, '')}/api`,
-});
+// import api from "../src/api/api.js";
 export default function Profile() {
   const [user, setUser] = useState(null);
   const { user: loggedInUser, Loading } = useAuth(); // from AuthContext
@@ -20,6 +17,7 @@ export default function Profile() {
     };
     fetch();
   }, [id]);
+console.log("profile page:",loggedInUser);
 
   // Loading state
   if (Loading) {
@@ -31,16 +29,16 @@ export default function Profile() {
   }
 
   // 🧠 Access Control Logic
-  if (
-    loggedInUser?.role !== "admin" && // if not admin
-    loggedInUser?._id !== id // and not their own profile
-  ) {
-    return (
-      <div className="flex justify-center items-center h-screen text-red-500 text-xl">
-        ❌ You are not authorized to view this profile.
-      </div>
-    );
-  }
+  // if (
+  //   loggedInUser?.role !== "admin" && // if not admin
+  //   loggedInUser?._id !== id // and not their own profile
+  // ) {
+  //   return (
+  //     <div className="flex justify-center items-center h-screen text-red-500 text-xl">
+  //       ❌ You are not authorized to view this profile.
+  //     </div>
+  //   );
+  // }
 
   if (!user) {
     return (

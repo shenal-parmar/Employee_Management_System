@@ -10,11 +10,9 @@ import {
   FaChartBar,
 } from "react-icons/fa";
 import { format } from "date-fns";
-import axios from "axios";
+import api from "../src/api/api.js";
 const BACKEND_URL = `${import.meta.env.VITE_BACKEND_URL}`;
-const api = axios.create({
-  baseURL: `${import.meta.env.VITE_API_URL?.replace(/\/$/, '')}/api`,
-});
+
 export default function EmployeeDashboard() {
   const [user, setUser] = useState(null);
   const id = localStorage.getItem("user");

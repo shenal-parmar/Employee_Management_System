@@ -1,9 +1,6 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { FaSearch, FaPlus, FaUserAlt } from "react-icons/fa";
-const api = axios.create({
-  baseURL: `${import.meta.env.VITE_API_URL?.replace(/\/$/, '')}/api`,
-});
+import api from "../src/api/api.js";
 export default function EmployeeManagement() {
   const [employees, setEmployees] = useState([]);
   const [departments, setDepartments] = useState([]);
@@ -68,10 +65,7 @@ export default function EmployeeManagement() {
     e.preventDefault();
     try {
       if (editing) {
-        await api.put(
-          `/employees/${editing._id}`,
-          formData
-        );
+        await api.put(`/employees/${editing._id}`, formData);
       } else {
         await api.post(`/employees`, formData);
       }
@@ -94,13 +88,30 @@ export default function EmployeeManagement() {
         .includes(search.toLowerCase()) ||
       e.designation?.toLowerCase().includes(search.toLowerCase())
   );
+  const handleStatusToggle = async (emp) => {
+  try {
+    const newStatus = emp.status === "pending" ? "verified" : "pending";
+
+    await api.put(`/employees/status/${emp._id}`, { status: newStatus });
+
+    // Update state immediately
+    setEmployees((prev) =>
+      prev.map((e) => (e._id === emp._id ? { ...e, status: newStatus } : e))
+    );
+  } catch (err) {
+    console.error("Error updating employee status:", err);
+  }
+};
+
 
   return (
     <div className="p-6 max-w-7xl mx-auto">
       {/* Header + Add Employee */}
       <div className="flex justify-between items-center mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Employee Management</h1>
+          <h1 className="text-2xl font-bold text-gray-900">
+            Employee Management
+          </h1>
           <p className="text-gray-500">Manage employee details and records</p>
         </div>
         <button
@@ -171,11 +182,15 @@ export default function EmployeeManagement() {
           <tbody>
             {loading ? (
               <tr>
-                <td className="p-4 text-gray-500" colSpan={6}>Loading...</td>
+                <td className="p-4 text-gray-500" colSpan={6}>
+                  Loading...
+                </td>
               </tr>
             ) : filtered.length === 0 ? (
               <tr>
-                <td className="p-4 text-gray-500" colSpan={6}>No employees found</td>
+                <td className="p-4 text-gray-500" colSpan={6}>
+                  No employees found
+                </td>
               </tr>
             ) : (
               filtered.map((emp) => (
@@ -183,10 +198,24 @@ export default function EmployeeManagement() {
                   <td className="py-3 px-4">{emp.name}</td>
                   <td className="py-3 px-4">{emp.email}</td>
                   <td className="py-3 px-4">
-                    {departments.find((d) => d._id === emp.department)?.name || "N/A"}
+                    {departments.find((d) => d._id === emp.department)?.name ||
+                      "N/A"}
                   </td>
                   <td className="py-3 px-4">{emp.designation}</td>
                   <td className="py-3 px-4">${emp.salary}</td>
+                  <td className="py-3 px-4">
+                    <button
+                      onClick={() => handleStatusToggle(emp)}
+                      className={`w-8 h-4 flex items-center rounded-full transition-colors duration-200
+      ${emp.status === "verified" ? "bg-green-500" : "bg-red-500"}`}
+                    >
+                      <div
+                        className={`w-3 h-3 bg-white rounded-full shadow transform transition-transform duration-200
+        ${emp.status === "verified" ? "translate-x-4" : "translate-x-0"}`}
+                      ></div>
+                    </button>
+                  </td>
+
                   <td className="py-3 px-4 text-right">
                     <button
                       onClick={() => {

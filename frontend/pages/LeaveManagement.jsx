@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../src/api/api.js";
 import { FaSearch, FaPlus } from "react-icons/fa";
-const api = axios.create({
-  baseURL: `${import.meta.env.VITE_API_URL?.replace(/\/$/, '')}/api`,
-});
+
 export default function LeaveManagement({ userRole = "admin", employeeData }) {
   const [leaves, setLeaves] = useState([]);
   const [employees, setEmployees] = useState([]);

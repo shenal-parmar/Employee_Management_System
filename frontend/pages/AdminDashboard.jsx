@@ -16,10 +16,8 @@ import {
 } from "react-icons/fa";
 import { format } from "date-fns";
 import { Link } from "react-router-dom";
-import axios from "axios";
-const api = axios.create({
-  baseURL: `${import.meta.env.VITE_API_URL?.replace(/\/$/, '')}/api`,
-});
+import api from "../src/api/api.js";
+
 export default function AdminDashboard() {
   const [user, setUser] = useState(null);
 
@@ -36,12 +34,22 @@ export default function AdminDashboard() {
     queryKey: ["employees"],
     queryFn: async () => {
       try {
-        const res = await api.get(
-          `/employees`
-        );
+        const res = await api.get(`/employees`);
         return res.data || [];
       } catch (err) {
         console.error("Error fetching employees:", err);
+        return [];
+      }
+    },
+  });
+  const { data: pendingEmployees = [] } = useQuery({
+    queryKey: ["pendingEmployees"],
+    queryFn: async () => {
+      try {
+        const res = await api.get(`/employees/pending`);
+        return res.data || [];
+      } catch (err) {
+        console.error("Error fetching pending employees:", err);
         return [];
       }
     },
@@ -51,9 +59,7 @@ export default function AdminDashboard() {
     queryKey: ["departments"],
     queryFn: async () => {
       try {
-        const res = await api.get(
-          `/departments`
-        );
+        const res = await api.get(`/departments`);
         return res.data || [];
       } catch (err) {
         console.error("Error fetching departments:", err);
@@ -66,9 +72,7 @@ export default function AdminDashboard() {
     queryKey: ["leaves"],
     queryFn: async () => {
       try {
-        const res = await api.get(
-          `/leaves`
-        );
+        const res = await api.get(`/leaves`);
         return res.data || [];
       } catch (err) {
         console.error("Error fetching leaves:", err);
@@ -81,9 +85,7 @@ export default function AdminDashboard() {
     queryKey: ["salaries"],
     queryFn: async () => {
       try {
-        const res = await api.get(
-          `/salaries`
-        );
+        const res = await api.get(`/salaries`);
         return res.data || [];
       } catch (err) {
         console.error("Error fetching salaries:", err);
@@ -155,12 +157,19 @@ export default function AdminDashboard() {
 
   const stats = [
     {
-      title: "Total Employees",
-      value: employees.length,
-      icon: <FaUsers className="text-[#93BFC7] text-3xl" />,
-      color: "bg-[#93BFC7]/20",
-      link: "/employeeManagement",
-    },
+  title: "Pending Employee Approvals",
+  value: pendingEmployees.length,
+  icon: <FaExclamationCircle className="text-red-500 text-3xl" />,
+  color: "bg-red-200",
+  link: "/pending-approvals", // define route as needed
+},
+    // {
+    //   title: "Total Employees",
+    //   value: employees.length,
+    //   icon: <FaUsers className="text-[#93BFC7] text-3xl" />,
+    //   color: "bg-[#93BFC7]/20",
+    //   link: "/employeeManagement",
+    // },
     {
       title: "Active Departments",
       value: departments.length,
@@ -187,7 +196,6 @@ export default function AdminDashboard() {
   return (
     <div className="p-6 md:p-8 space-y-8 bg-[#ECF4E8] min-h-screen">
       <div className="max-w-7xl mx-auto">
-        
         {/* Welcome Section */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-[#4F6F75] mb-2">
@@ -223,25 +231,41 @@ export default function AdminDashboard() {
           </h2>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <Link className="p-4 rounded-xl bg-[#93BFC7]/30 text-center hover:shadow-md transition" to="/leaves">
+            <Link
+              className="p-4 rounded-xl bg-[#93BFC7]/30 text-center hover:shadow-md transition"
+              to="/leaves"
+            >
               <FaCalendarAlt className="text-[#93BFC7] text-3xl mx-auto mb-2" />
               <p className="font-semibold">Pending Leaves</p>
-              <p className="text-gray-600 text-sm">{pendingLeaves.length} Requests</p>
+              <p className="text-gray-600 text-sm">
+                {pendingLeaves.length} Requests
+              </p>
             </Link>
 
-            <Link className="p-4 rounded-xl bg-[#ABE7B2] text-center hover:shadow-md transition" to="/salaryManagement">
+            <Link
+              className="p-4 rounded-xl bg-[#ABE7B2] text-center hover:shadow-md transition"
+              to="/salaryManagement"
+            >
               <FaDollarSign className="text-[#4F6F75] text-3xl mx-auto mb-2" />
               <p className="font-semibold">Salary Overview</p>
-              <p className="text-gray-600 text-sm">${totalSalaryPaid.toLocaleString()} Paid</p>
+              <p className="text-gray-600 text-sm">
+                ${totalSalaryPaid.toLocaleString()} Paid
+              </p>
             </Link>
 
-            <Link className="p-4 rounded-xl bg-[#CBF3BB] text-center hover:shadow-md transition" to="/employeeManagement">
+            <Link
+              className="p-4 rounded-xl bg-[#CBF3BB] text-center hover:shadow-md transition"
+              to="/employeeManagement"
+            >
               <FaPlus className="text-[#4F6F75] text-3xl mx-auto mb-2" />
               <p className="font-semibold">Add Employee</p>
               <p className="text-gray-600 text-sm">Create new record</p>
             </Link>
 
-            <Link className="p-4 rounded-xl bg-[#ECF4E8] text-center hover:shadow-md transition" to="/reports">
+            <Link
+              className="p-4 rounded-xl bg-[#ECF4E8] text-center hover:shadow-md transition"
+              to="/reports"
+            >
               <FaFileAlt className="text-[#4F6F75] text-3xl mx-auto mb-2" />
               <p className="font-semibold">Reports</p>
               <p className="text-gray-600 text-sm">View insights</p>
@@ -257,7 +281,10 @@ export default function AdminDashboard() {
 
           <div className="mt-4 space-y-3">
             {recentActivities.slice(0, 6).map((a, i) => (
-              <div key={i} className="flex items-start gap-3 p-3 rounded-lg hover:bg-[#ECF4E8]">
+              <div
+                key={i}
+                className="flex items-start gap-3 p-3 rounded-lg hover:bg-[#ECF4E8]"
+              >
                 <div>{a.icon}</div>
                 <div>
                   <p className="font-medium text-gray-800">{a.title}</p>
@@ -278,11 +305,16 @@ export default function AdminDashboard() {
           </h2>
 
           {departmentStats.map((dept) => (
-            <div key={dept._id} className="p-4 border rounded-lg mb-3 bg-[#ECF4E8]">
+            <div
+              key={dept._id}
+              className="p-4 border rounded-lg mb-3 bg-[#ECF4E8]"
+            >
               <div className="flex justify-between mb-2">
                 <div>
                   <p className="font-semibold text-gray-900">{dept.name}</p>
-                  <p className="text-gray-600 text-sm">{dept.employeeCount} employees</p>
+                  <p className="text-gray-600 text-sm">
+                    {dept.employeeCount} employees
+                  </p>
                 </div>
                 <span className="text-sm font-semibold text-[#4F6F75]">
                   Avg: ${dept.avgSalary.toFixed(0)}
@@ -292,13 +324,16 @@ export default function AdminDashboard() {
               <div className="h-2 w-full bg-[#ABE7B2]/50 rounded-full">
                 <div
                   className="h-2 bg-[#93BFC7] rounded-full"
-                  style={{ width: `${(dept.employeeCount / employees.length) * 100 || 0}%` }}
+                  style={{
+                    width: `${
+                      (dept.employeeCount / employees.length) * 100 || 0
+                    }%`,
+                  }}
                 ></div>
               </div>
             </div>
           ))}
         </div>
-
       </div>
     </div>
   );

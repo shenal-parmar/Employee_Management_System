@@ -3,16 +3,11 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import User from "../models/UserModel.js";
 import Employee from "../models/EmployeeModel.js";
+
 // const navigate = useNavigate()
 
 const router = express.Router();
 
-// 🔐 Generate JWT token
-const generateToken = (user) => {
-  return jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET, {
-    expiresIn: "7d",
-  });
-};
 
 router.post("/register", async (req, res) => {
   try {
@@ -36,6 +31,7 @@ router.post("/register", async (req, res) => {
   }
 });
 
+
 // 🔑 Login user
 //if user found in user or employe then match paswword and assign token 
 router.post("/login", async (req, res) => {
@@ -48,7 +44,7 @@ router.post("/login", async (req, res) => {
     let role = "admin"; // default role for User collection
     if (!user) {
       user = await Employee.findOne({ email });
-      console.log("in emp check", user);
+      // console.log("in emp check", user);
       role = "employee"; // assign role dynamically
     }
 
@@ -63,6 +59,8 @@ router.post("/login", async (req, res) => {
     if (!isMatch)
       return res.status(401).json({ message: "Invalid credentials" });
     // Generate JWT token
+    console.log("LOGIN JWT SECRET:", process.env.JWT_SECRET);
+
     const token = jwt.sign(
       { id: user._id, email: user.email, role },
       process.env.JWT_SECRET,

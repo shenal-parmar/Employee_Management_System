@@ -1,11 +1,7 @@
-import axios from "axios";
 import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {  userContext } from "../context/AuthContext.jsx";
-const api = axios.create({
-  baseURL: `${import.meta.env.VITE_API_URL?.replace(/\/$/, '')}/api`,
-});
-
+import api from "../src/api/api.js";
 // Refactored function for testing
 export const submitLogin = async ({ email, password }) => {
   
@@ -28,14 +24,16 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("email", email);
-  console.log("password", password);
+  //   console.log("email", email);
+  // console.log("password", password);
+  
     try {
       const res = await submitLogin({ email, password });
+      // {localStorage.removeItem("token")}
       localStorage.setItem("token", res.token);
       localStorage.setItem("user",res.user.id)
       localStorage.setItem("userRole",res.user.role)
-      console.log("res",res);
+      // console.log("res",res);
       login(res.user.name);
          alert("Successfully login");
       if (res.user.role === "admin") navigate("/admin-dashboard");

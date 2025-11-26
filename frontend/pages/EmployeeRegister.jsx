@@ -1,9 +1,5 @@
 import { useState } from "react";
-import axios from "axios";
-
-const api = axios.create({
-  baseURL: `${import.meta.env.VITE_API_URL?.replace(/\/$/, "")}/api`,
-});
+import api from "../src/api/api.js";
 
 export default function EmployeeRegister() {
   const [form, setForm] = useState({

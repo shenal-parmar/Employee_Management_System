@@ -1,9 +1,4 @@
-import axios from "axios";
-
-// const API_URL = "http://localhost:3000/api/salaries"; // your backend route
-const api = axios.create({
-  baseURL: `${import.meta.env.VITE_API_URL?.replace(/\/$/, '')}/api`,
-});
+import api from "../api/api.js";
 export const getSalaries = async () => {
   const res = await api.get("/salaries");
   return res.data;

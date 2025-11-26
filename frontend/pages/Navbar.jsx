@@ -2,10 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaUserCircle, FaBars, FaTimes } from "react-icons/fa";
 import { useAuth } from "../context/AuthContext";
-import axios from "axios";
-const api = axios.create({
-  baseURL: `${import.meta.env.VITE_API_URL?.replace(/\/$/, '')}/api`,
-});
+// import api from "../src/api/api.js";
 export default function Navbar() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();

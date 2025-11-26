@@ -8,7 +8,7 @@ router.get("/verify", verifyUser, (req, res) => {
   res.json({
     success: true,
     user: req.user, 
-    role:req.user.role// this is the user decoded from the token
+    role:req.user.role,// this is the user decoded from the token
   });
 });
 

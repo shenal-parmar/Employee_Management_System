@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import api from "../src/api/api.js";
 const BACKEND_URL = `${import.meta.env.VITE_BACKEND_URL}`
 
 export default function DepartmentManagement() {
@@ -9,9 +9,7 @@ export default function DepartmentManagement() {
   const [selectedDept, setSelectedDept] = useState(null);
   const [formData, setFormData] = useState({ name: "", description: "" });
   const [loading, setLoading] = useState(true);
-const api = axios.create({
-  baseURL: `${import.meta.env.VITE_API_URL?.replace(/\/$/, '')}/api`,
-});
+
   // ✅ Fetch Departments & Employees
   useEffect(() => {
     const fetchData = async () => {
