@@ -67,7 +67,9 @@ export const createEmployee = async (req, res) => {
 
 export const toggleStatus = async (req, res) => {
   try {
-    const user = await User.findById(req.params.id);
+    // console.log("user id in toggle: ",req.params.id);
+    
+    const user = await Employee.findById(req.params.id);
 
     if (!user) return res.status(404).json({ message: "User not found" });
 

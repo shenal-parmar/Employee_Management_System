@@ -90,14 +90,17 @@ export default function EmployeeManagement() {
   );
   const handleStatusToggle = async (emp) => {
   try {
-    const newStatus = emp.status === "pending" ? "verified" : "pending";
-
+    const newStatus = emp.status === "pending" ? "approved" : "pending";
+    console.log(emp._id,"emp: ",emp,newStatus);
+    
     await api.put(`/employees/status/${emp._id}`, { status: newStatus });
 
     // Update state immediately
     setEmployees((prev) =>
       prev.map((e) => (e._id === emp._id ? { ...e, status: newStatus } : e))
     );
+    console.log(employees);
+    
   } catch (err) {
     console.error("Error updating employee status:", err);
   }
@@ -207,11 +210,11 @@ export default function EmployeeManagement() {
                     <button
                       onClick={() => handleStatusToggle(emp)}
                       className={`w-8 h-4 flex items-center rounded-full transition-colors duration-200
-      ${emp.status === "verified" ? "bg-green-500" : "bg-red-500"}`}
+      ${emp.status === "approved" ? "bg-green-500" : "bg-red-500"}`}
                     >
                       <div
                         className={`w-3 h-3 bg-white rounded-full shadow transform transition-transform duration-200
-        ${emp.status === "verified" ? "translate-x-4" : "translate-x-0"}`}
+        ${emp.status === "approved" ? "translate-x-4" : "translate-x-0"}`}
                       ></div>
                     </button>
                   </td>

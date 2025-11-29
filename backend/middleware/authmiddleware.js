@@ -3,14 +3,14 @@ import User from "../models/UserModel.js";
 import jwt from "jsonwebtoken"
 export const protect = async (req, res, next) => {
   let token;
-  console.log("VERIFY JWT SECRET:", process.env.JWT_SECRET);
+  // console.log("VERIFY JWT SECRET:", process.env.JWT_SECRET);
 
   // console.log("request : ",req.headers.authorization.startsWith('Bearer'));
   if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
     try {
       token = req.headers.authorization.split(" ")[1];
       // console.log("auth middleware secret:",process.env.JWT_SECRET);
-      console.log("aoken:",req.headers.authorization);
+      // console.log("aoken:",req.headers.authorization);
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
       // console.log("decoded by auth middleware: ",decoded);
       
