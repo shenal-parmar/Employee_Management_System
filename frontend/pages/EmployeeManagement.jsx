@@ -89,23 +89,21 @@ export default function EmployeeManagement() {
       e.designation?.toLowerCase().includes(search.toLowerCase())
   );
   const handleStatusToggle = async (emp) => {
-  try {
-    const newStatus = emp.status === "pending" ? "approved" : "pending";
-    console.log(emp._id,"emp: ",emp,newStatus);
-    
-    await api.put(`/employees/status/${emp._id}`, { status: newStatus });
+    try {
+      const newStatus = emp.status === "pending" ? "approved" : "pending";
+      // console.log(emp._id, "emp: ", emp, newStatus);
 
-    // Update state immediately
-    setEmployees((prev) =>
-      prev.map((e) => (e._id === emp._id ? { ...e, status: newStatus } : e))
-    );
-    console.log(employees);
-    
-  } catch (err) {
-    console.error("Error updating employee status:", err);
-  }
-};
+      await api.put(`/employees/status/${emp._id}`, { status: newStatus });
 
+      // Update state immediately
+      setEmployees((prev) =>
+        prev.map((e) => (e._id === emp._id ? { ...e, status: newStatus } : e))
+      );
+      console.log(employees);
+    } catch (err) {
+      console.error("Error updating employee status:", err);
+    }
+  };
 
   return (
     <div className="p-6 max-w-7xl mx-auto">
@@ -179,6 +177,7 @@ export default function EmployeeManagement() {
               <th className="py-3 px-4">Department</th>
               <th className="py-3 px-4">Designation</th>
               <th className="py-3 px-4">Salary</th>
+              <th className="py-3 px-4 text-right">Verified</th>
               <th className="py-3 px-4 text-right">Actions</th>
             </tr>
           </thead>
@@ -207,16 +206,13 @@ export default function EmployeeManagement() {
                   <td className="py-3 px-4">{emp.designation}</td>
                   <td className="py-3 px-4">${emp.salary}</td>
                   <td className="py-3 px-4">
-                    <button
+                    <span
                       onClick={() => handleStatusToggle(emp)}
-                      className={`w-8 h-4 flex items-center rounded-full transition-colors duration-200
-      ${emp.status === "approved" ? "bg-green-500" : "bg-red-500"}`}
+                      className={`cursor-pointer font-semibold hover:underline
+    ${emp.status === "approved" ? "text-green-600" : "text-red-600"}`}
                     >
-                      <div
-                        className={`w-3 h-3 bg-white rounded-full shadow transform transition-transform duration-200
-        ${emp.status === "approved" ? "translate-x-4" : "translate-x-0"}`}
-                      ></div>
-                    </button>
+                      {emp.status === "approved" ? "Approved" : "Pending"}
+                    </span>
                   </td>
 
                   <td className="py-3 px-4 text-right">

@@ -3,7 +3,7 @@
 import bcrypt from "bcryptjs";
 import Employee from "../models/EmployeeModel.js";
 import jwt from "jsonwebtoken";
-import User from "../models/UserModel.js";
+import upload from "../middleware/upload.js";
 
 // ===============================
 // CREATE / REGISTER EMPLOYEE
@@ -19,7 +19,7 @@ export const createEmployee = async (req, res) => {
       salary,
       gender,
       marital_status,
-      date_of_joining
+      date_of_joining,
     } = req.body;
 
     // Check if employee already exists
@@ -32,7 +32,8 @@ export const createEmployee = async (req, res) => {
 
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
-
+  console.log(req.file);
+  
     // Create employee WITHOUT designation + department
     const newEmp = await Employee.create({
       name,
@@ -44,11 +45,12 @@ export const createEmployee = async (req, res) => {
       gender,
       marital_status,
       date_of_joining,
-
       // Admin will assign later
       designation: null,
       department: null,
-      status: "pending"
+      status: "pending",
+      profile_image: req.file ? `/uploads/${req.file.filename}` : null
+
     });
 
     // Remove password from response
@@ -57,9 +59,8 @@ export const createEmployee = async (req, res) => {
     res.status(201).json({
       success: true,
       message: "Registration successful. Waiting for admin approval.",
-      employee: empWithoutPassword
+      employee: empWithoutPassword,
     });
-
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -68,7 +69,7 @@ export const createEmployee = async (req, res) => {
 export const toggleStatus = async (req, res) => {
   try {
     // console.log("user id in toggle: ",req.params.id);
-    
+
     const user = await Employee.findById(req.params.id);
 
     if (!user) return res.status(404).json({ message: "User not found" });
@@ -89,8 +90,26 @@ export const toggleStatus = async (req, res) => {
 
 export const getpendingEmps = async (req, res) => {
   const users = await Employee.find({ status: "pending" });
+  const users1 = await Employee.find();
+  console.log("pending : ", users);
+  console.log("all : ", users1);
   res.json(users);
-}
+};
+export const uploadFile = async (req, res) => {
+  upload.single("profile_image"),
+    async (req, res) => {
+      try {
+        const emp = await Employee.findByIdAndUpdate(
+          req.params.id,
+          { profile_image: req.file.filename },
+          { new: true }
+        );
+        res.json(emp);
+      } catch (error) {
+        res.status(500).json({ message: error.message });
+      }
+    };
+};
 
 // ===============================
 // READ ALL EMPLOYEES
@@ -117,8 +136,7 @@ export const updateEmployee = async (req, res) => {
     let updatedData = { ...rest };
 
     // If admin updates password
-    if (password)
-      updatedData.password = await bcrypt.hash(password, 10);
+    if (password) updatedData.password = await bcrypt.hash(password, 10);
 
     const updated = await Employee.findByIdAndUpdate(
       req.params.id,
@@ -127,7 +145,6 @@ export const updateEmployee = async (req, res) => {
     ).select("-password");
 
     res.json(updated);
-
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -143,7 +160,6 @@ export const getEmployeesWithDepartment = async (req, res) => {
       .select("-password");
 
     res.json(employees);
-
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -155,15 +171,13 @@ export const getEmployeesWithDepartment = async (req, res) => {
 export const getMe = async (req, res) => {
   try {
     const authHeader = req.headers.authorization;
-    if (!authHeader)
-      return res.status(401).json({ message: "No token" });
+    if (!authHeader) return res.status(401).json({ message: "No token" });
 
     const token = authHeader.split(" ")[1];
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
     const user = await Employee.findById(decoded.id).select("-password");
     res.json(user);
-
   } catch (error) {
     res.status(401).json({ message: "Invalid or expired token" });
   }
@@ -176,7 +190,6 @@ export const deleteEmployee = async (req, res) => {
   try {
     await Employee.findByIdAndDelete(req.params.id);
     res.json({ success: true });
-
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

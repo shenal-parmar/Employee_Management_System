@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { getCurrentUser } from "../src/api/userApi";
 import { FaUserCircle, FaEnvelope, FaPhone, FaBuilding } from "react-icons/fa";
 import { useAuth } from "../context/AuthContext"; // <-- import Auth context
-import { useParams, useNavigate } from "react-router-dom"; // if route has userId
+import { useParams, useNavigate, data } from "react-router-dom"; // if route has userId
 // import api from "../src/api/api.js";
 export default function Profile() {
   const [user, setUser] = useState(null);
@@ -17,7 +17,7 @@ export default function Profile() {
     };
     fetch();
   }, [id]);
-console.log("profile page:",loggedInUser);
+  console.log("profile page:", data);
 
   // Loading state
   if (Loading) {
@@ -28,17 +28,6 @@ console.log("profile page:",loggedInUser);
     );
   }
 
-  // 🧠 Access Control Logic
-  // if (
-  //   loggedInUser?.role !== "admin" && // if not admin
-  //   loggedInUser?._id !== id // and not their own profile
-  // ) {
-  //   return (
-  //     <div className="flex justify-center items-center h-screen text-red-500 text-xl">
-  //       ❌ You are not authorized to view this profile.
-  //     </div>
-  //   );
-  // }
 
   if (!user) {
     return (
@@ -52,11 +41,18 @@ console.log("profile page:",loggedInUser);
     <div className="min-h-screen bg-gray-50 py-10 px-6">
       <div className="max-w-3xl mx-auto bg-white p-8 rounded-xl shadow-md">
         <div className="flex flex-col items-center mb-6">
-          <FaUserCircle className="text-6xl text-blue-600 mb-2" />
-          <h2 className="text-2xl font-bold text-gray-800">
-            {user.full_name}
-          </h2>
-          <p className="text-gray-500">{user.role || "Employee"}</p>
+          {user.profile_image ? (
+            <img
+              src={`${import.meta.env.VITE_BACKEND_URL}${user.profile_image}`}
+              alt="Profile"
+              className="w-24 h-24 rounded-full object-cover border-2 border-blue-500 mb-2"
+            />
+          ) : (
+            <FaUserCircle className="text-6xl text-blue-600 mb-2" />
+          )}
+
+          <h2 className="text-2xl font-bold text-gray-800">{user.full_name}</h2>
+          <p className="text-gray-500">{user.name || "Employee"}</p>
         </div>
 
         <div className="grid md:grid-cols-2 gap-6">

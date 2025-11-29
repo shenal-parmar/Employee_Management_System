@@ -161,7 +161,7 @@ export default function AdminDashboard() {
   value: pendingEmployees.length,
   icon: <FaExclamationCircle className="text-red-500 text-3xl" />,
   color: "bg-red-200",
-  link: "/employeeManagement", // define route as needed
+  link: "/pending-employees", // define route as needed
 },
     // {
     //   title: "Total Employees",

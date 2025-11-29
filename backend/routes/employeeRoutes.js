@@ -1,6 +1,7 @@
 import express from "express";
 const router = express.Router();
 import { adminOnly, protect } from "../middleware/authmiddleware.js";
+
 import {
   createEmployee,
   getEmployees,
@@ -9,12 +10,16 @@ import {
   getMe,
   deleteEmployee,
   getpendingEmps,
-  toggleStatus
+  toggleStatus,
+  uploadFile
 } from "../controller/employeeController.js";
+import upload from "../middleware/upload.js";
 
 
 // CREATE
-router.post("/", createEmployee);
+router.post("/",  upload.single("profile_image"),createEmployee);
+
+router.put("/:id/upload", uploadFile);
 
 // READ ALL
 // GET /employees/pending
