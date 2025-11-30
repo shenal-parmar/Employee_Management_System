@@ -31,10 +31,11 @@ const Login = () => {
       const res = await submitLogin({ email, password });
       // {localStorage.removeItem("token")}
       localStorage.setItem("token", res.token);
-      localStorage.setItem("user",res.user.id)
+      // localStorage.setItem("user",res.user.id)
+      localStorage.setItem("user",JSON.stringify(res.user))
       localStorage.setItem("userRole",res.user.role)
       // console.log("res",res);
-      login(res.user.name);
+      login(res.user);
          alert("Successfully login");
       if (res.user.role === "admin") navigate("/admin-dashboard");
       else navigate("/employee-dashboard");

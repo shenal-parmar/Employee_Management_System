@@ -33,6 +33,7 @@ const AuthContext = ({ children }) => {
       const res = await api.get(`/auth/verify`, {
         headers: { Authorization: `Bearer ${token}` },
       });
+      // console.log(res.data);
       if (res.data.success) setuser(res.data.user);
       else setuser(null);
     } catch (error) {

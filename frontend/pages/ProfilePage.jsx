@@ -8,7 +8,7 @@ export default function Profile() {
   const [user, setUser] = useState(null);
   const { user: loggedInUser, Loading } = useAuth(); // from AuthContext
   const { id } = useParams(); // assuming /profile/:id route
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   useEffect(() => {
     const fetch = async () => {

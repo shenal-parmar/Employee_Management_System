@@ -30,9 +30,8 @@ function App() {
 }{console.log("token: ",localStorage.getItem("token"))} */}
       <Routes>
         <Route path="/" element={<Login />}></Route>
+        <Route path="/login" element={<Login />}></Route>
         <Route path="/reports" element={<Reports />}></Route>
-        {/* <Route path="/admin-dashboard" element={<AdminDashboard />} ></Route>
-          <Route path="/employee-dashboard" element={<UserDashboard />} ></Route> */}
         <Route
           path="/admin-dashboard"
           element={
