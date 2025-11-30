@@ -1,6 +1,7 @@
 // controllers/leaveController.js
 
 import Leave from "../models/LeaveModel.js";
+import { io } from "../server.js";
 
 // CREATE leave request
 export const createLeave = async (req, res) => {
@@ -26,6 +27,10 @@ export const createLeave = async (req, res) => {
     });
 
     await newLeave.save();
+    io.emit("notification", {
+      type: "leave_applied",
+      message: `${req.body.employee_name} applied for leave`,
+    });
 
     res.status(201).json({
       success: true,
@@ -34,18 +39,24 @@ export const createLeave = async (req, res) => {
     });
   } catch (error) {
     console.error("Error creating leave:", error);
-    res.status(500).json({ success: false, message: "Failed to create leave", error });
+    res
+      .status(500)
+      .json({ success: false, message: "Failed to create leave", error });
   }
 };
 
 // GET all leaves
 export const getLeaves = async (req, res) => {
   try {
-    const leaves = await Leave.find().populate("emp_id").sort({ createdAt: -1 });
+    const leaves = await Leave.find()
+      .populate("emp_id")
+      .sort({ createdAt: -1 });
     res.status(200).json(leaves);
   } catch (error) {
     console.error("Error fetching leaves:", error);
-    res.status(500).json({ success: false, message: "Failed to fetch leaves", error });
+    res
+      .status(500)
+      .json({ success: false, message: "Failed to fetch leaves", error });
   }
 };
 
@@ -63,23 +74,33 @@ export const getLeaveById = async (req, res) => {
 // GET leaves of an employee
 export const getMyLeaves = async (req, res) => {
   try {
-    const leaves = await Leave.find({ emp_id: req.params.id }).sort({ createdAt: -1 });
+    const leaves = await Leave.find({ emp_id: req.params.id }).sort({
+      createdAt: -1,
+    });
     res.status(200).json(leaves);
   } catch (error) {
     console.error("Error fetching employee leaves:", error);
-    res.status(500).json({ message: "Error fetching leaves", error: error.message });
+    res
+      .status(500)
+      .json({ message: "Error fetching leaves", error: error.message });
   }
 };
 
 // UPDATE leave
 export const updateLeave = async (req, res) => {
   try {
-    const updatedLeave = await Leave.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-    });
+    const updatedLeave = await Leave.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      {
+        new: true,
+      }
+    );
 
     if (!updatedLeave)
-      return res.status(404).json({ success: false, message: "Leave not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Leave not found" });
 
     res.status(200).json({
       success: true,
@@ -88,7 +109,9 @@ export const updateLeave = async (req, res) => {
     });
   } catch (error) {
     console.error("Error updating leave:", error);
-    res.status(500).json({ success: false, message: "Failed to update leave", error });
+    res
+      .status(500)
+      .json({ success: false, message: "Failed to update leave", error });
   }
 };
 
@@ -98,10 +121,16 @@ export const deleteLeave = async (req, res) => {
     const deleted = await Leave.findByIdAndDelete(req.params.id);
 
     if (!deleted)
-      return res.status(404).json({ success: false, message: "Leave not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Leave not found" });
 
-    res.status(200).json({ success: true, message: "Leave deleted successfully" });
+    res
+      .status(200)
+      .json({ success: true, message: "Leave deleted successfully" });
   } catch (error) {
-    res.status(500).json({ success: false, message: "Error deleting leave", error });
+    res
+      .status(500)
+      .json({ success: false, message: "Error deleting leave", error });
   }
 };

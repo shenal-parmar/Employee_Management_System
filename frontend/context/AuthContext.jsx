@@ -54,6 +54,8 @@ const login = (user) => {
   const logout = () => {
     // console.log("authcontext logout called");
     localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    localStorage.removeItem("userRole");
     setuser(null);
   };
   return (

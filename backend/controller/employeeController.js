@@ -91,8 +91,8 @@ export const toggleStatus = async (req, res) => {
 export const getpendingEmps = async (req, res) => {
   const users = await Employee.find({ status: "pending" });
   const users1 = await Employee.find();
-  console.log("pending : ", users);
-  console.log("all : ", users1);
+  // console.log("pending : ", users);
+  // console.log("all : ", users1);
   res.json(users);
 };
 export const uploadFile = async (req, res) => {

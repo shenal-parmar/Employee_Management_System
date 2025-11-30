@@ -12,19 +12,27 @@ import {
 import { format } from "date-fns";
 import api from "../src/api/api.js";
 const BACKEND_URL = `${import.meta.env.VITE_BACKEND_URL}`;
-
+import { io } from "socket.io-client";
+import { toast } from "react-toastify";
 export default function EmployeeDashboard() {
   const [user, setUser] = useState(null);
-  const id = localStorage.getItem("user");
-  console.log("user at dashboard : ", id);
+  const user1 = JSON.parse(localStorage.getItem("user"));
+  const { id } = user1;
+  // console.log("user at dashboard : ", user1.id);
 
-  // ✅ Get logged-in user details
+  const socket = io("http://localhost:3000");
+  //  Get logged-in user details
   useEffect(() => {
     const fetchUser = async () => {
       const currentUser = await getCurrentUser();
       setUser(currentUser);
     };
     fetchUser();
+    socket.on("notification", (data) => {
+      console.log("Notification:", data);
+      toast.info(data.message);
+    });
+    return () => socket.off("notification");
   }, []);
 
   // ✅ Fetch employee’s own leaves
@@ -41,9 +49,7 @@ export default function EmployeeDashboard() {
     queryKey: ["mySalaries"],
     queryFn: async () => {
       try {
-        const res = await api.get(
-          `/salaries/my-salary/${id}`
-        );
+        const res = await api.get(`/salaries/my-salary/${id}`);
         // console.log("salary :",res);f
 
         return res.data || [];
@@ -85,46 +91,44 @@ export default function EmployeeDashboard() {
     to_date: "",
     description: "",
   });
-const submitLeave = async () => {
-  const today = new Date().setHours(0,0,0,0);
-  const from = new Date(form.from_date).setHours(0,0,0,0);
-  const to = new Date(form.to_date).setHours(0,0,0,0);
+  const submitLeave = async () => {
+    const today = new Date().setHours(0, 0, 0, 0);
+    const from = new Date(form.from_date).setHours(0, 0, 0, 0);
+    const to = new Date(form.to_date).setHours(0, 0, 0, 0);
 
-  // ❌ From date must not be before today
-  if (from < today) {
-    alert("From date cannot be before today.");
-    return;
-  }
+    // ❌ From date must not be before today
+    if (from < today) {
+      alert("From date cannot be before today.");
+      return;
+    }
 
-  // ❌ To date must be >= From date
-  if (to < from) {
-    alert("To date must be after or same as From date.");
-    return;
-  }
+    // ❌ To date must be >= From date
+    if (to < from) {
+      alert("To date must be after or same as From date.");
+      return;
+    }
 
-  // ✅ Calculate number of leave days
-  const days = Math.floor((to - from) / (1000 * 60 * 60 * 24)) + 1;
+    // ✅ Calculate number of leave days
+    const days = Math.floor((to - from) / (1000 * 60 * 60 * 24)) + 1;
 
-  try {
-    await api.post(`/leaves`, {
-      emp_id: id,
-      employee_name: user?.name,
-      leave_type: form.leave_type,
-      from_date: form.from_date,
-      to_date: form.to_date,
-      description: form.description,
-      days,
-    });
+    try {
+      await api.post(`/leaves`, {
+        emp_id: id,
+        employee_name: user?.name,
+        leave_type: form.leave_type,
+        from_date: form.from_date,
+        to_date: form.to_date,
+        description: form.description,
+        days,
+      });
 
-    alert(`Leave submitted successfully for ${days} day(s)!`);
-    setShowForm(false);
-
-  } catch (err) {
-    console.error("Error submitting leave:", err);
-    alert("Error submitting leave");
-  }
-};
-
+      alert(`Leave submitted successfully for ${days} day(s)!`);
+      setShowForm(false);
+    } catch (err) {
+      console.error("Error submitting leave:", err);
+      alert("Error submitting leave");
+    }
+  };
 
   return (
     <div className="p-6 md:p-8 space-y-8 bg-gradient-to-br from-gray-50 to-blue-50 min-h-screen">
@@ -132,7 +136,7 @@ const submitLeave = async () => {
         {/* Welcome Section */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            Welcome, {user?.full_name || "Employee"} 👋
+            Welcome, {user?.name || "Employee"} 👋
           </h1>
           <p className="text-gray-600">
             Here’s an overview of your work, leaves, and salary.

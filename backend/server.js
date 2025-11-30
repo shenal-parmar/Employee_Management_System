@@ -2,51 +2,67 @@ import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import cors from "cors";
-// import authRoutes from "./routes/auth.js";
+import http from "http";
+import { Server } from "socket.io";
+
 import empRoutes from "./routes/employeeRoutes.js";
 import deptRoutes from "./routes/departmentRoutes.js";
-import salaryRoutes from "./routes/salaryRoutes.js"
-import leaveRoutes from "./routes/leaveRoutes.js"
-import userRoutes from "./routes/userRoutes.js"
-import authRoutes from "./routes/authRoutes.js"
-
+import salaryRoutes from "./routes/salaryRoutes.js";
+import leaveRoutes from "./routes/leaveRoutes.js";
+import userRoutes from "./routes/userRoutes.js";
+import authRoutes from "./routes/authRoutes.js";
 
 dotenv.config();
 const app = express();
-const allowedOrigins = (process.env.CORS_ORIGINS || "")
-  .split(",")
-  .map((o) => o.trim())
-  .filter(Boolean);
-console.log("CORS Allowed Origins:", allowedOrigins);
 
-app.use(express.json());
+// IMPORTANT → create HTTP server for Socket.IO
+const server = http.createServer(app);
+
+// SOCKET.IO SETUP
+export const io = new Server(server, {
+  cors: {
+    origin: ["http://localhost:5173"],  // frontend
+    methods: ["GET", "POST"],
+  },
+});
+
+io.on("connection", (socket) => {
+  console.log("User connected:", socket.id);
+
+  socket.on("disconnect", () => {
+    console.log("User disconnected:", socket.id);
+  });
+});
+
+// CORS SETUP
 app.use(
   cors({
-    origin: (origin, callback) => {
-      if (!origin) return callback(null, true); // allow mobile/postman
-      if (allowedOrigins.length === 0 || allowedOrigins.includes(origin)) {
-        return callback(null, true);
-      }
-      console.warn("❌ Blocked by CORS:", origin);
-      return callback(new Error("Not allowed by CORS"));
-    },
+    origin: ["http://localhost:5173"], // frontend
     credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
-    allowedHeaders: ["Content-Type", "Authorization"],
   })
-); // allow all origins for dev; tighten in prod
+);
 
-// app.use("/api/auth", authRoutes);
+app.use(express.json());
+
+// ROUTES
 app.use("/api/leaves", leaveRoutes);
 app.use("/api/salaries", salaryRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/employees", empRoutes);
 app.use("/api/departments", deptRoutes);
 app.use("/api/auth", authRoutes);
+
 app.use("/uploads", express.static("uploads"));
 
-
 const PORT = process.env.PORT || 3000;
-mongoose.connect(process.env.MONGO_URI)
-  .then(()=> app.listen(PORT, ()=> console.log(`Backend running ${PORT}`)))
-  .catch(err=> console.error(err));
+
+// MONGO + START SERVER CORRECTLY
+mongoose
+  .connect(process.env.MONGO_URI)
+  .then(() => {
+    // THIS is the correct server start
+    server.listen(PORT, () =>
+      console.log(`Backend running with Socket.IO on port ${PORT}`)
+    );
+  })
+  .catch((err) => console.error(err));

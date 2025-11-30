@@ -19,6 +19,9 @@ import ProtectedRoute from "../pages/ProtectedRoute";
 import EmployeeDashboard from "../pages/EmployeeDashboard";
 import EmployeeRegister from "../pages/EmployeeRegister";
 import PendingEmployees from "../pages/PendingEmployees";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 
 function App() {
   const [count, setCount] = useState(0);
@@ -26,8 +29,7 @@ function App() {
   return (
     <>
       <Navbar></Navbar>
-{/* {localStorage.removeItem("token")
-}{console.log("token: ",localStorage.getItem("token"))} */}
+      <ToastContainer />
       <Routes>
         <Route path="/" element={<Login />}></Route>
         <Route path="/login" element={<Login />}></Route>
