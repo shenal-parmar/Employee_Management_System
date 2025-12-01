@@ -30,21 +30,25 @@ export default function Navbar() {
     <nav className="bg-white/80 backdrop-blur-md shadow-md px-4 sm:px-6 py-4 flex justify-between items-center border-b border-teal-100 relative">
       {/* Brand */}
       <h1
-        className="text-xl sm:text-2xl font-bold text-teal-700 cursor-pointer hover:text-teal-800 transition"
+        className="py-6 text-xl sm:text-2xl font-bold text-teal-700 cursor-pointer hover:text-teal-800 transition"
         onClick={() => navigate("/")}
       >
-        HR Portal
+     <img
+  src="/image2.avif"
+  alt="emslogo"
+  className="absolute top-2 h-16 w-auto object-contain" 
+/> 
       </h1>
 
       {/* Desktop Menu */}
       <div className="hidden md:flex items-center gap-6">
-        <button className="relative flex items-center gap-1">
+        {/* <button className="relative flex items-center gap-1">
           🔔 {notifications.length > 0 && (
             <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
               {notifications.length}
             </span>
           )}
-        </button>
+        </button> */}
 
         {user && (
           <Link

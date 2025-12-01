@@ -198,21 +198,21 @@ export default function AdminDashboard() {
   ];
 
   return (
-  <div className="p-4 sm:p-6 md:p-8 space-y-8 bg-[#ECF4E8] min-h-screen">
-    <div className="max-w-7xl mx-auto">
+  <main className="p-4 sm:p-6 md:p-8 space-y-8 bg-[#ECF4E8] min-h-screen">
+    <section className="max-w-7xl mx-auto">
       
       {/* Welcome Section */}
-      <div className="mb-6 sm:mb-8 text-center sm:text-left">
+      <header className="mb-6 sm:mb-8 text-center sm:text-left">
         <h1 className="text-2xl sm:text-3xl font-bold text-[#4F6F75] mb-2">
           Welcome back, {user?.full_name || "Admin"}! 👋
         </h1>
         <p className="text-gray-600 text-sm sm:text-base">
           Here’s your organization overview.
         </p>
-      </div>
+      </header>
 
       {/* Stats Section */}
-      <div className="
+      <section  className="
         grid 
         grid-cols-1 
         sm:grid-cols-2 
@@ -238,10 +238,10 @@ export default function AdminDashboard() {
             </p>
           </Link>
         ))}
-      </div>
+      </section >
 
       {/* Quick Actions */}
-      <div className="bg-white shadow-lg rounded-xl p-5 sm:p-6 mb-8">
+      <section  className="bg-white shadow-lg rounded-xl p-5 sm:p-6 mb-8">
         <h2 className="text-lg sm:text-xl font-semibold mb-4 flex items-center gap-2 text-[#4F6F75]">
           <FaClock /> Quick Actions
         </h2>
@@ -293,10 +293,10 @@ export default function AdminDashboard() {
             <p className="text-gray-600 text-xs sm:text-sm">View insights</p>
           </Link>
         </div>
-      </div>
+      </section >
 
       {/* Recent Activities */}
-      <div className="bg-white shadow-lg rounded-xl p-5 sm:p-6 mb-8">
+      <section  className="bg-white shadow-lg rounded-xl p-5 sm:p-6 mb-8">
         <h2 className="text-lg sm:text-xl font-semibold flex items-center gap-2 text-[#4F6F75]">
           <FaChartBar /> Recent Activities
         </h2>
@@ -322,10 +322,10 @@ export default function AdminDashboard() {
             </div>
           ))}
         </div>
-      </div>
+      </section >
 
       {/* Department Overview */}
-      <div className="bg-white shadow-lg rounded-xl p-5 sm:p-6 mb-8">
+      <section  className="bg-white shadow-lg rounded-xl p-5 sm:p-6 mb-8">
         <h2 className="text-lg sm:text-xl font-semibold flex items-center gap-2 text-[#4F6F75]">
           <FaBuilding /> Department Overview
         </h2>
@@ -359,8 +359,8 @@ export default function AdminDashboard() {
             </div>
           ))}
         </div>
-      </div>
-    </div>
-  </div>
+      </section >
+    </section>
+  </main>
 );
 }

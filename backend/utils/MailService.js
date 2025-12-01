@@ -18,7 +18,7 @@ export const sendMail = async ({ to, subject, text, html }) => {
       {
         headers: {
           "Content-Type": "application/json",
-          "api-key": process.env.BREVO_API_KEY,   // 🔥 REQUIRED
+          "api-key": process.env.BREVO_API_KEY,   
         },
       }
     );

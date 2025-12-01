@@ -77,7 +77,6 @@ export const loginUser = async (req, res) => {
   }
 };
 
-// 📌 Get Logged-in User Details
 export const getCurrentUser = async (req, res) => {
   try {
     const authHeader = req.headers.authorization;

@@ -1,7 +1,6 @@
 import dotenv from "dotenv"
 import express from "express"
 import http from "http"
-// import io from "socket.io"
 import { Server } from "socket.io"; 
 import cors from "cors"; 
 import morgan from "morgan"; 
@@ -26,7 +25,7 @@ const allowedOrigins = [
   "https://employee-management-system-zeta-nine.vercel.app",
   "https://employee-management-system-dlm7.onrender.com",
 ];
-console.log("BREVO API KEY:", process.env.BREVO_API_KEY);
+// console.log("BREVO API KEY:", process.env.BREVO_API_KEY);
 
 // SOCKET.IO
 export const io = new Server(server, {
@@ -42,8 +41,6 @@ io.on("connection", (socket) => {
   socket.on("disconnect", () => console.log("User disconnected:", socket.id));
 });
 
-// EXPRESS CORS
-// Express CORS middleware (handles preflight automatically)
 app.use(cors({
   origin: function (origin, callback) {
     if (!origin) return callback(null, true);
@@ -66,6 +63,7 @@ app.get("/test-email", async (req, res) => {
 
 app.use(morgan("dev"));
 app.use(express.json());
+app.use(express.static("public"));
 
 // ROUTES
 app.use("/api/leaves", leaveRoutes);
@@ -75,6 +73,11 @@ app.use("/api/employees", empRoutes);
 app.use("/api/departments", deptRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/uploads", express.static("uploads"));
+app.set("view engine", "ejs");
+app.set("views", "./views");
+app.get("/server-home", (req, res) => {
+  res.render("home");
+});
 
 const PORT = process.env.PORT || 3000;
 

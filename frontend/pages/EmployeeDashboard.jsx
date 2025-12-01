@@ -118,21 +118,21 @@ export default function EmployeeDashboard() {
   };
 
   return (
-    <div className="p-4 sm:p-6 md:p-8 space-y-8 bg-gradient-to-br from-gray-50 to-blue-50 min-h-screen">
-      <div className="max-w-5xl mx-auto">
+    <main  className="p-4 sm:p-6 md:p-8 space-y-8 bg-gradient-to-br from-gray-50 to-blue-50 min-h-screen">
+      <section className="max-w-5xl mx-auto">
         
         {/* Welcome */}
-        <div className="mb-6 text-center sm:text-left">
+        <header  className="mb-6 text-center sm:text-left">
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
             Welcome, {user?.name || "Employee"} 👋
           </h1>
           <p className="text-gray-600 mt-1">
             Here’s an overview of your work, leaves, and salary.
           </p>
-        </div>
+        </header >
 
         {/* Stats */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
+        <section  className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
           <div className="bg-white shadow-md rounded-xl p-5 text-center">
             <FaCalendarAlt className="text-blue-600 text-3xl mb-2 mx-auto" />
             <p className="text-gray-500 text-sm">Pending Leaves</p>
@@ -152,10 +152,10 @@ export default function EmployeeDashboard() {
               ${totalPaidSalary.toLocaleString()}
             </p>
           </div>
-        </div>
+        </section >
 
         {/* My Leaves */}
-        <div className="bg-white shadow-lg rounded-xl p-6 mt-8">
+        <section  className="bg-white shadow-lg rounded-xl p-6 mt-8">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-2">
             <h2 className="text-lg sm:text-xl font-semibold flex items-center gap-2">
               <FaCalendarAlt className="text-blue-600" /> My Leaves
@@ -211,10 +211,10 @@ export default function EmployeeDashboard() {
               </table>
             )}
           </div>
-        </div>
+        </section >
 
         {/* Salary */}
-        <div className="bg-white shadow-lg rounded-xl p-6 mt-8">
+        <section  className="bg-white shadow-lg rounded-xl p-6 mt-8">
           <h2 className="text-lg sm:text-xl font-semibold mb-4 flex items-center gap-2">
             <FaDollarSign className="text-green-600" /> Salary Details
           </h2>
@@ -253,10 +253,10 @@ export default function EmployeeDashboard() {
               </table>
             )}
           </div>
-        </div>
+        </section >
 
         {/* Recent Activity */}
-        <div className="bg-white shadow-lg rounded-xl p-6 mt-8">
+        <section  className="bg-white shadow-lg rounded-xl p-6 mt-8">
           <h2 className="text-lg sm:text-xl font-semibold mb-4 flex items-center gap-2">
             <FaChartBar className="text-blue-600" /> Recent Activity
           </h2>
@@ -282,7 +282,7 @@ export default function EmployeeDashboard() {
               ))
             )}
           </div>
-        </div>
+        </section >
 
         {/* Modal */}
         {showForm && (
@@ -350,7 +350,7 @@ export default function EmployeeDashboard() {
           </div>
         )}
 
-      </div>
-    </div>
+      </section>
+    </main>
   );
 }

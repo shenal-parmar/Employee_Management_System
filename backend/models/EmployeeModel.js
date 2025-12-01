@@ -68,7 +68,6 @@ const EmployeeSchema = new mongoose.Schema(
       type: String,
     },
 
-    // NEW FIELD to track registration approval
     status: {
       type: String,
       enum: ["pending", "approved"],

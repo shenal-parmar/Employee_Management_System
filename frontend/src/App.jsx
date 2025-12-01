@@ -22,7 +22,6 @@ import PendingEmployees from "../pages/PendingEmployees";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-
 function App() {
   const [count, setCount] = useState(0);
 
@@ -60,7 +59,7 @@ function App() {
           path="/departmentManagement"
           element={<DepartmentManagement />}
         ></Route>
-        
+
         <Route path="/pending-employees" element={<PendingEmployees />}></Route>
         <Route path="/leaves" element={<LeaveManagement />}></Route>
         <Route path="/salaryManagement" element={<SalaryManagement />}></Route>
