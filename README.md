@@ -1,12 +1,13 @@
 🔧 Project Setup & Installation
-1️⃣ Clone the Repo
+# 1️⃣ Clone the Repo
 git clone <repo-link>
 cd project-folder
 
 
-2️⃣ Backend Setup
+# 2️⃣ Backend Setup
 cd backend
 npm install
+
 
 Create .env file:
 PORT=5000
