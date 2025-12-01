@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { getSalaries, getEmployees, createSalary, updateSalary } from "../src/api/salaryApi";
 import { FaSearch, FaPlus, FaEdit, FaDollarSign, FaFileAlt } from "react-icons/fa";
-import api from "../src/api/api.js";
 
 export default function SalaryManagement() {
   const [salaries, setSalaries] = useState([]);
@@ -61,43 +60,38 @@ export default function SalaryManagement() {
       setFormData({
         ...formData,
         emp_id: emp._id,
-        employee_name: emp.name, // ✅ FIX: ensure name is set correctly
+        employee_name: emp.name,
         basic_salary: emp.salary || "",
       });
     }
   };
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
-  const data = { ...formData, total: calculateTotal() };
+    e.preventDefault();
+    const data = { ...formData, total: calculateTotal() };
 
-  if (editing) {
-    await updateSalary(editing._id, data);
-  } else {
-    await createSalary(data);
-  }
+    if (editing) await updateSalary(editing._id, data);
+    else await createSalary(data);
 
-  const updated = await getSalaries();
-  setSalaries(updated);
-  setShowForm(false);
-  resetForm();
-};
-  // ✅ FIX: Use employee_name consistently
+    const updated = await getSalaries();
+    setSalaries(updated);
+    setShowForm(false);
+    resetForm();
+  };
+
   const filtered = salaries.filter(
     (s) =>
       s.employee_name?.toLowerCase().includes(search.toLowerCase()) ||
       s.month?.toLowerCase().includes(search.toLowerCase())
   );
-  console.log("filtered: ",filtered);
-  
 
   const totalPaid = salaries
     .filter((s) => s.status === "Paid")
     .reduce((sum, s) => sum + (s.total || 0), 0);
 
   return (
-    <div className="p-6 max-w-7xl mx-auto">
-      <div className="flex justify-between items-center mb-6">
+    <div className="p-4 sm:p-6 max-w-7xl mx-auto">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4 sm:gap-0">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Salary Management</h1>
           <p className="text-gray-500">Manage employee salaries and payments</p>
@@ -114,7 +108,7 @@ export default function SalaryManagement() {
       </div>
 
       {/* Cards */}
-      <div className="grid md:grid-cols-3 gap-6 mb-6">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 mb-6">
         <div className="bg-green-50 p-4 rounded-xl shadow flex items-center gap-3">
           <FaDollarSign className="text-green-600 text-2xl" />
           <div>
@@ -153,81 +147,85 @@ export default function SalaryManagement() {
       </div>
 
       {/* Table */}
-      <div className="bg-white rounded-xl shadow overflow-x-auto">
-        <table className="w-full text-left">
+      <div className="overflow-x-auto bg-white rounded-xl shadow">
+        <table className="min-w-full text-left">
           <thead className="bg-gray-100">
             <tr>
-              <th className="py-3 px-4">Employee</th>
-              <th className="py-3 px-4">Month/Year</th>
-              <th className="py-3 px-4">Basic</th>
-              <th className="py-3 px-4">Allowance</th>
-              <th className="py-3 px-4">Deduction</th>
-              <th className="py-3 px-4">Net Salary</th>
-              <th className="py-3 px-4">Status</th>
-              <th className="py-3 px-4 text-right">Actions</th>
+              <th className="py-3 px-4 text-sm sm:text-base">Employee</th>
+              <th className="py-3 px-4 text-sm sm:text-base">Month/Year</th>
+              <th className="py-3 px-4 text-sm sm:text-base">Basic</th>
+              <th className="py-3 px-4 text-sm sm:text-base">Allowance</th>
+              <th className="py-3 px-4 text-sm sm:text-base">Deduction</th>
+              <th className="py-3 px-4 text-sm sm:text-base">Net Salary</th>
+              <th className="py-3 px-4 text-sm sm:text-base">Status</th>
+              <th className="py-3 px-4 text-sm sm:text-base text-right">Actions</th>
             </tr>
           </thead>
-         <tbody>
-  {loading ? (
-    <tr><td className="p-4 text-gray-500">Loading...</td></tr>
-  ) : filtered.length === 0 ? (
-    <tr><td className="p-4 text-gray-500">No salary records found</td></tr>
-  ) : (
-    filtered.map((sal) => (
-      <tr key={sal._id} className="border-b hover:bg-gray-50">
-        <td className="py-3 px-4">{sal.employee_name}</td>
-        <td className="py-3 px-4">{sal.month} {sal.year}</td>
-        <td className="py-3 px-4">${sal.basic_salary}</td>
-        <td className="py-3 px-4 text-green-700">+${sal.allowance}</td>
-        <td className="py-3 px-4 text-red-700">-${sal.deduction}</td>
-        <td className="py-3 px-4 font-bold">${sal.total}</td>
-        <td className="py-3 px-4">
-          <span
-            className={`px-2 py-1 rounded-lg text-sm ${
-              sal.status === "Paid"
-                ? "bg-green-100 text-green-700"
-                : sal.status === "Processing"
-                ? "bg-blue-100 text-blue-700"
-                : "bg-orange-100 text-orange-700"
-            }`}
-          >
-            {sal.status}
-          </span>
-        </td>
-        <td className="py-3 px-4 text-right">
-          <button
-            onClick={() => {
-              setEditing(sal);
-              setFormData({
-                emp_id: sal.emp_id,
-                employee_name: sal.employee_name,
-                basic_salary: sal.basic_salary,
-                allowance: sal.allowance,
-                deduction: sal.deduction,
-                total: sal.total,
-                month: sal.month,
-                year: sal.year,
-                status: sal.status,
-                _id: sal._id, // ensure ID is carried
-              });
-              setShowForm(true);
-            }}
-            className="text-blue-600 hover:text-blue-800"
-          >
-            <FaEdit />
-          </button>
-        </td>
-      </tr>
-    ))
-  )}
-</tbody>
+          <tbody>
+            {loading ? (
+              <tr>
+                <td className="p-4 text-gray-500" colSpan={8}>Loading...</td>
+              </tr>
+            ) : filtered.length === 0 ? (
+              <tr>
+                <td className="p-4 text-gray-500" colSpan={8}>No salary records found</td>
+              </tr>
+            ) : (
+              filtered.map((sal) => (
+                <tr key={sal._id} className="border-b hover:bg-gray-50">
+                  <td className="py-3 px-4">{sal.employee_name}</td>
+                  <td className="py-3 px-4">{sal.month} {sal.year}</td>
+                  <td className="py-3 px-4">${sal.basic_salary}</td>
+                  <td className="py-3 px-4 text-green-700">+${sal.allowance}</td>
+                  <td className="py-3 px-4 text-red-700">-${sal.deduction}</td>
+                  <td className="py-3 px-4 font-bold">${sal.total}</td>
+                  <td className="py-3 px-4">
+                    <span
+                      className={`px-2 py-1 rounded-lg text-sm ${
+                        sal.status === "Paid"
+                          ? "bg-green-100 text-green-700"
+                          : sal.status === "Processing"
+                          ? "bg-blue-100 text-blue-700"
+                          : "bg-orange-100 text-orange-700"
+                      }`}
+                    >
+                      {sal.status}
+                    </span>
+                  </td>
+                  <td className="py-3 px-4 text-right">
+                    <button
+                      onClick={() => {
+                        setEditing(sal);
+                        setFormData({
+                          emp_id: sal.emp_id,
+                          employee_name: sal.employee_name,
+                          basic_salary: sal.basic_salary,
+                          allowance: sal.allowance,
+                          deduction: sal.deduction,
+                          total: sal.total,
+                          month: sal.month,
+                          year: sal.year,
+                          status: sal.status,
+                          _id: sal._id,
+                        });
+                        setShowForm(true);
+                      }}
+                      className="text-blue-600 hover:text-blue-800"
+                    >
+                      <FaEdit />
+                    </button>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
         </table>
       </div>
 
       {/* Modal */}
       {showForm && (
-        <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center">
-          <div className="bg-white p-6 rounded-xl shadow-lg w-full max-w-lg">
+        <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50 p-4 sm:p-6">
+          <div className="bg-white p-4 sm:p-6 rounded-xl shadow-lg w-full max-w-lg">
             <h2 className="text-xl font-bold mb-4">
               {editing ? "Edit Salary Record" : "Generate Salary"}
             </h2>
@@ -294,21 +292,21 @@ export default function SalaryManagement() {
                 <option value="Paid">Paid</option>
               </select>
 
-              <div className="flex justify-between items-center mt-4">
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mt-4 gap-2">
                 <h3 className="text-lg font-semibold">
                   Net Salary: ${calculateTotal().toLocaleString()}
                 </h3>
-                <div className="flex gap-2">
+                <div className="flex gap-2 w-full sm:w-auto">
                   <button
                     type="button"
                     onClick={() => setShowForm(false)}
-                    className="px-4 py-2 border rounded-lg"
+                    className="px-4 py-2 border rounded-lg w-full sm:w-auto"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="px-4 py-2 bg-green-600 text-white rounded-lg"
+                    className="px-4 py-2 bg-green-600 text-white rounded-lg w-full sm:w-auto"
                   >
                     {editing ? "Update" : "Generate"}
                   </button>

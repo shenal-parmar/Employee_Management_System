@@ -17,6 +17,11 @@ import {
 import { format } from "date-fns";
 import { Link } from "react-router-dom";
 import api from "../src/api/api.js";
+import {io} from "socket.io-client"
+
+const socket = io(`${import.meta.env.VITE_API_URL?.replace(/\/$/, '')}`, {
+  transports: ["websocket"],
+});
 
 export default function AdminDashboard() {
   const [user, setUser] = useState(null);
@@ -27,6 +32,11 @@ export default function AdminDashboard() {
       setUser(currentUser);
     };
     fetchUser();
+    socket.on("notification", (data) => {
+          console.log("Notification:", data);
+          toast.info(data.message);
+        });
+        return () => socket.off("notification");
   }, []);
 
   // Fetch data
@@ -163,13 +173,7 @@ export default function AdminDashboard() {
   color: "bg-red-200",
   link: "/pending-employees", // define route as needed
 },
-    // {
-    //   title: "Total Employees",
-    //   value: employees.length,
-    //   icon: <FaUsers className="text-[#93BFC7] text-3xl" />,
-    //   color: "bg-[#93BFC7]/20",
-    //   link: "/employeeManagement",
-    // },
+   ,
     {
       title: "Active Departments",
       value: departments.length,
@@ -194,129 +198,152 @@ export default function AdminDashboard() {
   ];
 
   return (
-    <div className="p-6 md:p-8 space-y-8 bg-[#ECF4E8] min-h-screen">
-      <div className="max-w-7xl mx-auto">
-        {/* Welcome Section */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-[#4F6F75] mb-2">
-            Welcome back, {user?.full_name || "Admin"}! 👋
-          </h1>
-          <p className="text-gray-600">Here’s your organization overview.</p>
-        </div>
+  <div className="p-4 sm:p-6 md:p-8 space-y-8 bg-[#ECF4E8] min-h-screen">
+    <div className="max-w-7xl mx-auto">
+      
+      {/* Welcome Section */}
+      <div className="mb-6 sm:mb-8 text-center sm:text-left">
+        <h1 className="text-2xl sm:text-3xl font-bold text-[#4F6F75] mb-2">
+          Welcome back, {user?.full_name || "Admin"}! 👋
+        </h1>
+        <p className="text-gray-600 text-sm sm:text-base">
+          Here’s your organization overview.
+        </p>
+      </div>
 
-        {/* Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          {stats.map((stat, i) => (
-            <Link
-              to={stat.link}
-              key={i}
-              className="bg-white shadow-md rounded-xl p-6 hover:shadow-lg hover:-translate-y-1 transition"
-            >
-              <div className="flex items-center justify-between mb-4">
-                <div className={`p-3 rounded-lg ${stat.color}`}>
-                  {stat.icon}
-                </div>
-                <FaArrowRight className="text-gray-400" />
+      {/* Stats Section */}
+      <div className="
+        grid 
+        grid-cols-1 
+        sm:grid-cols-2 
+        lg:grid-cols-4 
+        gap-4 sm:gap-6 
+        mb-8
+      ">
+        {stats.map((stat, i) => (
+          <Link
+            to={stat.link}
+            key={i}
+            className="bg-white shadow-md rounded-xl p-5 sm:p-6 hover:shadow-lg hover:-translate-y-1 transition"
+          >
+            <div className="flex items-center justify-between mb-4">
+              <div className={`p-3 rounded-lg ${stat.color}`}>
+                {stat.icon}
               </div>
-              <p className="text-gray-500 text-sm">{stat.title}</p>
-              <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
-            </Link>
+              <FaArrowRight className="text-gray-400" />
+            </div>
+            <p className="text-gray-500 text-sm">{stat.title}</p>
+            <p className="text-xl sm:text-2xl font-bold text-gray-900">
+              {stat.value}
+            </p>
+          </Link>
+        ))}
+      </div>
+
+      {/* Quick Actions */}
+      <div className="bg-white shadow-lg rounded-xl p-5 sm:p-6 mb-8">
+        <h2 className="text-lg sm:text-xl font-semibold mb-4 flex items-center gap-2 text-[#4F6F75]">
+          <FaClock /> Quick Actions
+        </h2>
+
+        <div className="
+          grid 
+          grid-cols-1 
+          sm:grid-cols-2 
+          lg:grid-cols-4 
+          gap-4
+        ">
+          <Link
+            className="p-4 rounded-xl bg-[#93BFC7]/30 text-center hover:shadow-md transition"
+            to="/leaves"
+          >
+            <FaCalendarAlt className="text-[#93BFC7] text-3xl mx-auto mb-2" />
+            <p className="font-semibold text-sm sm:text-base">Pending Leaves</p>
+            <p className="text-gray-600 text-xs sm:text-sm">
+              {pendingLeaves.length} Requests
+            </p>
+          </Link>
+
+          <Link
+            className="p-4 rounded-xl bg-[#ABE7B2] text-center hover:shadow-md transition"
+            to="/salaryManagement"
+          >
+            <FaDollarSign className="text-[#4F6F75] text-3xl mx-auto mb-2" />
+            <p className="font-semibold text-sm sm:text-base">Salary Overview</p>
+            <p className="text-gray-600 text-xs sm:text-sm">
+              ${totalSalaryPaid.toLocaleString()} Paid
+            </p>
+          </Link>
+
+          <Link
+            className="p-4 rounded-xl bg-[#CBF3BB] text-center hover:shadow-md transition"
+            to="/employeeManagement"
+          >
+            <FaPlus className="text-[#4F6F75] text-3xl mx-auto mb-2" />
+            <p className="font-semibold text-sm sm:text-base">Add Employee</p>
+            <p className="text-gray-600 text-xs sm:text-sm">Create new record</p>
+          </Link>
+
+          <Link
+            className="p-4 rounded-xl bg-[#ECF4E8] text-center hover:shadow-md transition"
+            to="/reports"
+          >
+            <FaFileAlt className="text-[#4F6F75] text-3xl mx-auto mb-2" />
+            <p className="font-semibold text-sm sm:text-base">Reports</p>
+            <p className="text-gray-600 text-xs sm:text-sm">View insights</p>
+          </Link>
+        </div>
+      </div>
+
+      {/* Recent Activities */}
+      <div className="bg-white shadow-lg rounded-xl p-5 sm:p-6 mb-8">
+        <h2 className="text-lg sm:text-xl font-semibold flex items-center gap-2 text-[#4F6F75]">
+          <FaChartBar /> Recent Activities
+        </h2>
+
+        <div className="mt-4 space-y-3">
+          {recentActivities.slice(0, 6).map((a, i) => (
+            <div
+              key={i}
+              className="flex items-start gap-3 p-3 rounded-lg hover:bg-[#ECF4E8]"
+            >
+              <div>{a.icon}</div>
+              <div className="flex-1">
+                <p className="font-medium text-gray-800 text-sm sm:text-base">
+                  {a.title}
+                </p>
+                <p className="text-gray-600 text-xs sm:text-sm">
+                  {a.description}
+                </p>
+                <p className="text-gray-400 text-xs">
+                  {a?.time ? format(new Date(a.time), "MMM dd, h:mm a") : "-"}
+                </p>
+              </div>
+            </div>
           ))}
         </div>
+      </div>
 
-        {/* Quick Actions */}
-        <div className="bg-[#ECF4E8] shadow-lg rounded-xl p-6 mb-8">
-          <h2 className="text-xl font-semibold mb-4 flex items-center gap-2 text-[#4F6F75]">
-            <FaClock /> Quick Actions
-          </h2>
+      {/* Department Overview */}
+      <div className="bg-white shadow-lg rounded-xl p-5 sm:p-6 mb-8">
+        <h2 className="text-lg sm:text-xl font-semibold flex items-center gap-2 text-[#4F6F75]">
+          <FaBuilding /> Department Overview
+        </h2>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <Link
-              className="p-4 rounded-xl bg-[#93BFC7]/30 text-center hover:shadow-md transition"
-              to="/leaves"
-            >
-              <FaCalendarAlt className="text-[#93BFC7] text-3xl mx-auto mb-2" />
-              <p className="font-semibold">Pending Leaves</p>
-              <p className="text-gray-600 text-sm">
-                {pendingLeaves.length} Requests
-              </p>
-            </Link>
-
-            <Link
-              className="p-4 rounded-xl bg-[#ABE7B2] text-center hover:shadow-md transition"
-              to="/salaryManagement"
-            >
-              <FaDollarSign className="text-[#4F6F75] text-3xl mx-auto mb-2" />
-              <p className="font-semibold">Salary Overview</p>
-              <p className="text-gray-600 text-sm">
-                ${totalSalaryPaid.toLocaleString()} Paid
-              </p>
-            </Link>
-
-            <Link
-              className="p-4 rounded-xl bg-[#CBF3BB] text-center hover:shadow-md transition"
-              to="/employeeManagement"
-            >
-              <FaPlus className="text-[#4F6F75] text-3xl mx-auto mb-2" />
-              <p className="font-semibold">Add Employee</p>
-              <p className="text-gray-600 text-sm">Create new record</p>
-            </Link>
-
-            <Link
-              className="p-4 rounded-xl bg-[#ECF4E8] text-center hover:shadow-md transition"
-              to="/reports"
-            >
-              <FaFileAlt className="text-[#4F6F75] text-3xl mx-auto mb-2" />
-              <p className="font-semibold">Reports</p>
-              <p className="text-gray-600 text-sm">View insights</p>
-            </Link>
-          </div>
-        </div>
-
-        {/* Recent Activities */}
-        <div className="bg-white shadow-lg rounded-xl p-6 mb-8">
-          <h2 className="text-xl font-semibold flex items-center gap-2 text-[#4F6F75]">
-            <FaChartBar /> Recent Activities
-          </h2>
-
-          <div className="mt-4 space-y-3">
-            {recentActivities.slice(0, 6).map((a, i) => (
-              <div
-                key={i}
-                className="flex items-start gap-3 p-3 rounded-lg hover:bg-[#ECF4E8]"
-              >
-                <div>{a.icon}</div>
-                <div>
-                  <p className="font-medium text-gray-800">{a.title}</p>
-                  <p className="text-gray-600 text-sm">{a.description}</p>
-                  <p className="text-gray-400 text-xs">
-                    {a?.time ? format(new Date(a.time), "MMM dd, h:mm a") : "-"}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Department Overview */}
-        <div className="bg-white shadow-lg rounded-xl p-6 mb-8">
-          <h2 className="text-xl font-semibold flex items-center gap-2 text-[#4F6F75]">
-            <FaBuilding /> Department Overview
-          </h2>
-
+        <div className="mt-4 space-y-4">
           {departmentStats.map((dept) => (
             <div
               key={dept._id}
-              className="p-4 border rounded-lg mb-3 bg-[#ECF4E8]"
+              className="p-4 border rounded-lg bg-[#ECF4E8]"
             >
-              <div className="flex justify-between mb-2">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-2 gap-2">
                 <div>
-                  <p className="font-semibold text-gray-900">{dept.name}</p>
-                  <p className="text-gray-600 text-sm">
+                  <p className="font-semibold text-gray-900 text-sm sm:text-base">{dept.name}</p>
+                  <p className="text-gray-600 text-xs sm:text-sm">
                     {dept.employeeCount} employees
                   </p>
                 </div>
-                <span className="text-sm font-semibold text-[#4F6F75]">
+                <span className="text-xs sm:text-sm font-semibold text-[#4F6F75]">
                   Avg: ${dept.avgSalary.toFixed(0)}
                 </span>
               </div>
@@ -325,9 +352,7 @@ export default function AdminDashboard() {
                 <div
                   className="h-2 bg-[#93BFC7] rounded-full"
                   style={{
-                    width: `${
-                      (dept.employeeCount / employees.length) * 100 || 0
-                    }%`,
+                    width: `${(dept.employeeCount / employees.length) * 100 || 0}%`,
                   }}
                 ></div>
               </div>
@@ -336,5 +361,6 @@ export default function AdminDashboard() {
         </div>
       </div>
     </div>
-  );
+  </div>
+);
 }

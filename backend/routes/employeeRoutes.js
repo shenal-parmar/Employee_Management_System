@@ -1,6 +1,6 @@
 import express from "express";
-const router = express.Router();
 import { adminOnly, protect } from "../middleware/authmiddleware.js";
+const router = express.Router();
 
 import {
   createEmployee,
@@ -11,7 +11,8 @@ import {
   deleteEmployee,
   getpendingEmps,
   toggleStatus,
-  uploadFile
+  uploadFile,
+  approveEmp
 } from "../controller/employeeController.js";
 import upload from "../middleware/upload.js";
 
@@ -20,6 +21,7 @@ import upload from "../middleware/upload.js";
 router.post("/",  upload.single("profile_image"),createEmployee);
 
 router.put("/:id/upload", uploadFile);
+router.put("/employees/approve/:id",approveEmp),
 
 // READ ALL
 // GET /employees/pending

@@ -7,3 +7,5 @@ after password assign token
 if auth context then verify token 
 socket em dashbord url 
 profile page url
+navbar
+

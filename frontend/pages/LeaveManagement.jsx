@@ -310,7 +310,7 @@ export default function LeaveManagement({ userRole = "admin", employeeData }) {
                         setFormData((prev) => ({
                           ...prev,
                           employee_name: leave.employee_name || prev.employee_name,
-                          emp_id: leave.emp_id || prev.emp_id,
+                          emp_id:  leave.emp_id ?? prev.emp_id,
                           leave_type: leave.leave_type || "",
                           from_date: leave.from_date ? leave.from_date.split("T")[0] : "",
                           to_date: leave.to_date ? leave.to_date.split("T")[0] : "",

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import api from "../src/api/api.js";
-const BACKEND_URL = `${import.meta.env.VITE_BACKEND_URL}`
 
 export default function DepartmentManagement() {
   const [departments, setDepartments] = useState([]);
@@ -10,7 +9,6 @@ export default function DepartmentManagement() {
   const [formData, setFormData] = useState({ name: "", description: "" });
   const [loading, setLoading] = useState(true);
 
-  // ✅ Fetch Departments & Employees
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -20,9 +18,6 @@ export default function DepartmentManagement() {
         ]);
         setDepartments(deptRes.data);
         setEmployees(empRes.data);
-        // console.log("dep",deptRes.data);
-        // console.log("emp",empRes.data);
-        
       } catch (err) {
         console.error("Error fetching data:", err);
       } finally {
@@ -37,15 +32,11 @@ export default function DepartmentManagement() {
     setDepartments(res.data);
   };
 
-  // ✅ Add or Update Department
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       if (selectedDept) {
-        await api.put(
-          `/departments/${selectedDept._id}`,
-          formData
-        );
+        await api.put(`/departments/${selectedDept._id}`, formData);
       } else {
         await api.post("/departments", formData);
       }
@@ -99,20 +90,22 @@ export default function DepartmentManagement() {
     return <div className="p-6 text-gray-600 text-center">Loading...</div>;
 
   return (
-    <div className="p-8 max-w-6xl mx-auto font-inter">
+    <div className="p-4 sm:p-6 md:p-8 max-w-6xl mx-auto font-inter">
+      
       {/* Header */}
-      <div className="flex flex-col md:flex-row justify-between items-center mb-6">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
         <div>
-          <h1 className="text-3xl font-semibold text-gray-800">
+          <h1 className="text-2xl sm:text-3xl font-semibold text-gray-800">
             Department Management
           </h1>
-          <p className="text-gray-500 text-sm">
+          <p className="text-gray-500 text-sm sm:text-base">
             Organize your workforce by departments
           </p>
         </div>
+
         <button
           onClick={handleAdd}
-          className="bg-gradient-to-r from-purple-600 to-pink-500 text-white px-5 py-2.5 rounded-lg shadow hover:opacity-90 transition-all duration-200"
+          className="bg-gradient-to-r from-purple-600 to-pink-500 text-white px-4 py-2.5 rounded-lg shadow hover:opacity-90 transition-all duration-200 w-full sm:w-auto"
         >
           + Add Department
         </button>
@@ -130,7 +123,7 @@ export default function DepartmentManagement() {
           </button>
         </div>
       ) : (
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {departments.map((dept) => {
             const count = getDeptEmployeeCount(dept._id);
             return (
@@ -147,7 +140,7 @@ export default function DepartmentManagement() {
                       {count} {count === 1 ? "Employee" : "Employees"}
                     </p>
                   </div>
-                  <div className="flex gap-2 text-lg">
+                  <div className="flex gap-3 text-xl">
                     <button
                       onClick={() => handleEdit(dept)}
                       className="text-yellow-500 hover:text-yellow-700"
@@ -171,19 +164,21 @@ export default function DepartmentManagement() {
         </div>
       )}
 
-      {/* Dialog Modal */}
+      {/* Modal */}
       {showDialog && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 transition-opacity">
-          <div className="bg-white rounded-xl shadow-2xl w-full max-w-md p-6 relative animate-fadeIn">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center px-4 justify-center z-50">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-sm sm:max-w-md p-6 relative animate-fadeIn">
             <button
               onClick={() => setShowDialog(false)}
               className="absolute top-3 right-4 text-gray-500 hover:text-gray-700 text-xl"
             >
               ✕
             </button>
-            <h2 className="text-xl font-semibold mb-4 text-gray-800">
+
+            <h2 className="text-lg sm:text-xl font-semibold mb-4 text-gray-800">
               {selectedDept ? "Edit Department" : "Add New Department"}
             </h2>
+
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -195,11 +190,11 @@ export default function DepartmentManagement() {
                   onChange={(e) =>
                     setFormData({ ...formData, name: e.target.value })
                   }
-                  className="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-purple-500 outline-none"
+                  className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-purple-500 outline-none"
                   required
-                  placeholder="e.g., Engineering, Sales, Marketing"
                 />
               </div>
+
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Description
@@ -209,43 +204,32 @@ export default function DepartmentManagement() {
                   onChange={(e) =>
                     setFormData({ ...formData, description: e.target.value })
                   }
-                  className="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-purple-500 outline-none"
+                  className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-purple-500 outline-none"
                   rows="3"
-                  placeholder="Brief description of the department..."
                 />
               </div>
+
               <div className="flex justify-end gap-3 pt-2">
                 <button
                   type="button"
                   onClick={() => setShowDialog(false)}
-                  className="px-4 py-2 rounded-lg border border-gray-300 hover:bg-gray-100 transition"
+                  className="px-4 py-2 rounded-lg border border-gray-300 hover:bg-gray-100 transition w-full sm:w-auto"
                 >
                   Cancel
                 </button>
+
                 <button
                   type="submit"
-                  className="px-4 py-2 rounded-lg text-white bg-gradient-to-r from-purple-600 to-pink-500 hover:opacity-90"
+                  className="px-4 py-2 rounded-lg text-white bg-gradient-to-r from-purple-600 to-pink-500 hover:opacity-90 w-full sm:w-auto"
                 >
-                  {selectedDept ? "Update Department" : "Create Department"}
+                  {selectedDept ? "Update" : "Create"}
                 </button>
               </div>
             </form>
           </div>
         </div>
       )}
+
     </div>
   );
 }
-
-/* Add to your global CSS (index.css or App.css) */
-<style>
-{`
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-10px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  .animate-fadeIn {
-    animation: fadeIn 0.3s ease-out forwards;
-  }
-`}
-</style>

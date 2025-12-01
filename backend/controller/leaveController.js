@@ -2,6 +2,7 @@
 
 import Leave from "../models/LeaveModel.js";
 import { io } from "../server.js";
+import { sendMail } from "../utils/MailService.js";
 
 // CREATE leave request
 export const createLeave = async (req, res) => {
@@ -95,12 +96,28 @@ export const updateLeave = async (req, res) => {
       {
         new: true,
       }
-    );
+    ).populate("emp_id");
 
     if (!updatedLeave)
       return res
         .status(404)
         .json({ success: false, message: "Leave not found" });
+   const subject =
+      updatedLeave.status === "approved" ? "Your leave is approved" : "Your leave is rejected";
+console.log("updatedLeave",updatedLeave);
+
+    const text =
+       updatedLeave.status === "approved"
+        ? `Hello ${updatedLeave.employee_name},\n\nYour leave request has been approved.`
+        : `Hello ${updatedLeave.employee_name},\n\nYour leave request has been rejected.`;
+
+    // 📩 Send email to employee
+    const resemail = await sendMail({
+      to: updatedLeave.emp_id.email,
+      subject,
+      text,
+    });
+console.log(resemail);
 
     res.status(200).json({
       success: true,

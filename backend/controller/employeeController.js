@@ -4,6 +4,7 @@ import bcrypt from "bcryptjs";
 import Employee from "../models/EmployeeModel.js";
 import jwt from "jsonwebtoken";
 import upload from "../middleware/upload.js";
+import { sendMail } from "../utils/MailService.js";
 
 // ===============================
 // CREATE / REGISTER EMPLOYEE
@@ -32,8 +33,8 @@ export const createEmployee = async (req, res) => {
 
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
-  console.log(req.file);
-  
+    console.log(req.file);
+
     // Create employee WITHOUT designation + department
     const newEmp = await Employee.create({
       name,
@@ -49,13 +50,16 @@ export const createEmployee = async (req, res) => {
       designation: null,
       department: null,
       status: "pending",
-      profile_image: req.file ? `/uploads/${req.file.filename}` : null
-
+      profile_image: req.file ? `/uploads/${req.file.filename}` : null,
     });
 
     // Remove password from response
     const { password: _, ...empWithoutPassword } = newEmp.toObject();
-
+    await sendMail({
+      to: process.env.BREVO_SENDER,
+      subject: "New Employee Registered",
+      text: `A new employee (${newEmp.name}) has registered. Please review and approve.`,
+    });
     res.status(201).json({
       success: true,
       message: "Registration successful. Waiting for admin approval.",
@@ -65,6 +69,23 @@ export const createEmployee = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+export const approveEmp =  async (req, res) => {
+  const employee = await Employee.findByIdAndUpdate(
+    req.params.id,
+    { isApproved: true },
+    { new: true }
+  );
+
+  // Send email to EMPLOYEE
+  await sendMail({
+    to: employee.email,
+    subject: "Registration Approved",
+    text: `Hello ${employee.name},\n\nYour employee account has been approved by the admin.`,
+  });
+
+  res.json({ message: "Employee approved" });
+}
+
 
 export const toggleStatus = async (req, res) => {
   try {
