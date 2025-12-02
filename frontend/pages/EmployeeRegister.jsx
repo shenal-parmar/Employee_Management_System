@@ -1,5 +1,6 @@
 import { useState } from "react";
 import api from "../src/api/api.js";
+import { useNavigate } from "react-router-dom";
 
 export default function EmployeeRegister() {
   const [form, setForm] = useState({
@@ -35,6 +36,9 @@ export default function EmployeeRegister() {
       });
 
       setSuccess("Employee registered successfully!");
+      setTimeout(() => {
+        navigate("/");
+      }, 1500);
 
       setForm({
         name: "",
@@ -46,17 +50,15 @@ export default function EmployeeRegister() {
         date_of_joining: "",
         profile_image: null,
       });
-
     } catch (err) {
       setError(err.response?.data?.message || "Server error");
     }
   };
+  const navigate = useNavigate();
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-teal-600 to-gray-100 p-4 sm:p-6 md:p-10">
-      
       <div className="w-full max-w-3xl bg-white/80 backdrop-blur-lg shadow-2xl rounded-2xl p-6 sm:p-8 border border-white/20">
-        
         <h2 className="text-2xl sm:text-3xl font-bold text-center text-teal-700 mb-4">
           Employee Management System
         </h2>
@@ -66,7 +68,6 @@ export default function EmployeeRegister() {
         </h3>
 
         <form onSubmit={handleSubmit} className="space-y-5">
-
           {error && (
             <p className="text-red-600 font-semibold text-center bg-red-100 py-2 rounded">
               {error}
@@ -81,7 +82,6 @@ export default function EmployeeRegister() {
 
           {/* Form Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-
             {/* Full Name */}
             <div className="col-span-1">
               <label className="block text-gray-700 font-medium mb-1">
@@ -155,7 +155,6 @@ export default function EmployeeRegister() {
                 name="designation"
                 value={form.designation}
                 onChange={handleChange}
-                
                 placeholder="Ex: Software Developer"
                 className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-teal-500 outline-none"
               />
@@ -171,7 +170,6 @@ export default function EmployeeRegister() {
                 name="department"
                 value={form.department}
                 onChange={handleChange}
-                
                 placeholder="Mongo ObjectID of department"
                 className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-teal-500 outline-none"
               />

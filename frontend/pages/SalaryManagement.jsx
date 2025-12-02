@@ -241,7 +241,7 @@ export default function SalaryManagement() {
                   <option value="">Select employee</option>
                   {employees.map((emp) => (
                     <option key={emp._id} value={emp._id}>
-                      {emp.name} ({emp.emp_id})
+                      {emp.name} 
                     </option>
                   ))}
                 </select>

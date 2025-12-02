@@ -47,6 +47,18 @@ export default function EmployeeManagement() {
     };
     fetchEmployees();
   }, []);
+  const handleDelete = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this employee?"))
+      return;
+
+    try {
+      await api.delete(`/employees/${id}`);
+
+      setEmployees((prev) => prev.filter((e) => e._id !== id));
+    } catch (err) {
+      console.error("Error deleting employee:", err);
+    }
+  };
 
   const resetForm = () => {
     setFormData({
@@ -178,8 +190,11 @@ export default function EmployeeManagement() {
               <th className="py-3 px-4 whitespace-nowrap">Department</th>
               <th className="py-3 px-4 whitespace-nowrap">Designation</th>
               <th className="py-3 px-4 whitespace-nowrap">Salary</th>
-              <th className="py-3 px-4 whitespace-nowrap text-right">Verified</th>
-              <th className="py-3 px-4 whitespace-nowrap text-right">Actions</th>
+              <th className="py-3 px-4 whitespace-nowrap text-right">
+                Verified
+              </th>
+              <th className="py-3 px-4 whitespace-nowrap text-right">Edit</th>
+              <th className="py-3 px-4 whitespace-nowrap text-right">Delete</th>
             </tr>
           </thead>
 
@@ -236,6 +251,14 @@ export default function EmployeeManagement() {
                       className="text-blue-600 hover:text-blue-800"
                     >
                       Edit
+                    </button>
+                  </td>
+                  <td className="py-3 px-4 text-right">
+                    <button
+                      onClick={() => handleDelete(emp._id)}
+                      className="text-red-600 hover:text-red-800"
+                    >
+                      Delete
                     </button>
                   </td>
                 </tr>
