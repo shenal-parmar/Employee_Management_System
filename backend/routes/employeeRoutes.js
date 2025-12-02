@@ -21,7 +21,7 @@ import upload from "../middleware/upload.js";
 router.post("/",  upload.single("profile_image"),createEmployee);
 
 router.put("/:id/upload", uploadFile);
-router.put("/employees/approve/:id",approveEmp),
+router.put("/approve/:id",approveEmp),
 
 // READ ALL
 // GET /employees/pending

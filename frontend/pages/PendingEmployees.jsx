@@ -18,6 +18,16 @@ export default function PendingEmployees() {
     };
     fetchPending();
   }, []);
+  const handleApprove = async (id) => {
+  try {
+    await api.put(`/employees/approve/${id}`);
+
+    setEmployees((prev) => prev.filter((e) => e._id !== id));
+  } catch (err) {
+    console.error("Error approving employee:", err);
+  }
+};
+
 
   return (
     <div className="p-4 sm:p-6 max-w-7xl mx-auto">
@@ -47,7 +57,7 @@ export default function PendingEmployees() {
                   <td className="py-2 px-2 sm:px-4">
                     <button
                       className="text-green-600 font-semibold hover:underline"
-                      onClick={() => alert("Approve logic coming…")}
+                      onClick={() => handleApprove(emp._id)}
                     >
                       Approve
                     </button>
