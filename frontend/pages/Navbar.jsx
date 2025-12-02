@@ -29,16 +29,16 @@ export default function Navbar() {
   return (
     <nav className="bg-white/80 backdrop-blur-md shadow-md px-4 sm:px-6 py-4 flex justify-between items-center border-b border-teal-100 relative">
       {/* Brand */}
-      <h1
+      <Link
         className="py-6 text-xl sm:text-2xl font-bold text-teal-700 cursor-pointer hover:text-teal-800 transition"
-        onClick={() => navigate("/")}
+         to={user.role === "admin" ? "/admin-dashboard" : "/employee-dashboard"}
       >
      <img
   src="/image2.avif"
   alt="emslogo"
   className="absolute top-2 h-16 w-auto object-contain" 
 /> 
-      </h1>
+      </Link>
 
       {/* Desktop Menu */}
       <div className="hidden md:flex items-center gap-6">
