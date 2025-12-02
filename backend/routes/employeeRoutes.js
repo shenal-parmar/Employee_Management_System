@@ -20,7 +20,7 @@ import upload from "../middleware/upload.js";
 // CREATE
 router.post("/",  upload.single("profile_image"),createEmployee);
 
-router.put("/:id/upload", uploadFile);
+router.put("/:id/upload",upload.single("profile_image"), uploadFile);
 router.put("/approve/:id",approveEmp),
 
 // READ ALL

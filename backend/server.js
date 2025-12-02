@@ -27,6 +27,7 @@ const allowedOrigins = [
 ];
 // console.log("BREVO API KEY:", process.env.BREVO_API_KEY);
 
+
 // SOCKET.IO
 export const io = new Server(server, {
   cors: {
@@ -38,9 +39,16 @@ export const io = new Server(server, {
 
 io.on("connection", (socket) => {
   console.log("User connected:", socket.id);
+  socket.on("join", (userId) => {
+    socket.join(userId);
+    console.log("User joined room:", userId);
+  });
   socket.on("disconnect", () => console.log("User disconnected:", socket.id));
 });
-
+app.use((req, res, next) => {
+  req.io = io;
+  next();
+});
 app.use(cors({
   origin: function (origin, callback) {
     if (!origin) return callback(null, true);

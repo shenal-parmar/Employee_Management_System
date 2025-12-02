@@ -100,12 +100,14 @@ export const updateLeaveStatus = async (req, res) => {
       return res
         .status(404)
         .json({ success: false, message: "Leave not found" });
-   const subject =
-      updatedLeave.status === "approved" ? "Your leave is approved" : "Your leave is rejected";
-console.log("updatedLeave",updatedLeave);
+    const subject =
+      updatedLeave.status === "approved"
+        ? "Your leave is approved"
+        : "Your leave is rejected";
+    console.log("updatedLeave", updatedLeave);
 
     const text =
-       updatedLeave.status === "approved"
+      updatedLeave.status === "approved"
         ? `Hello ${updatedLeave.employee_name},\n\nYour leave request has been approved.`
         : `Hello ${updatedLeave.employee_name},\n\nYour leave request has been rejected.`;
 
@@ -115,7 +117,7 @@ console.log("updatedLeave",updatedLeave);
       subject,
       text,
     });
-console.log(resemail);
+    console.log(resemail);
 
     res.status(200).json({
       success: true,
@@ -145,12 +147,14 @@ export const updateLeave = async (req, res) => {
       return res
         .status(404)
         .json({ success: false, message: "Leave not found" });
-   const subject =
-      updatedLeave.status === "approved" ? "Your leave is approved" : "Your leave is rejected";
-console.log("updatedLeave",updatedLeave);
+    const subject =
+      updatedLeave.status === "approved"
+        ? "Your leave is approved"
+        : "Your leave is rejected";
+    console.log("updatedLeave", updatedLeave);
 
     const text =
-       updatedLeave.status === "approved"
+      updatedLeave.status === "approved"
         ? `Hello ${updatedLeave.employee_name},\n\nYour leave request has been approved.`
         : `Hello ${updatedLeave.employee_name},\n\nYour leave request has been rejected.`;
 
@@ -160,7 +164,14 @@ console.log("updatedLeave",updatedLeave);
       subject,
       text,
     });
-console.log(resemail);
+    console.log(resemail);
+    io.emit("notification", {
+      type: "leave_status_updated",
+      message: `${updatedLeave.employee_name}'s leave is ${updatedLeave.status}`,
+    });
+    io.to(updatedLeave.emp_id._id.toString()).emit("leave_status", {
+      message: `Your leave request is ${updatedLeave.status}`,
+    });
 
     res.status(200).json({
       success: true,

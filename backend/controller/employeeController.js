@@ -72,10 +72,12 @@ export const createEmployee = async (req, res) => {
 export const approveEmp =  async (req, res) => {
   const employee = await Employee.findByIdAndUpdate(
     req.params.id,
-    { isApproved: true },
+    { status: "approved" },
     { new: true }
   );
-
+  req.io.to(employee._id.toString()).emit("approved", {
+      message: "Your account has been approved!",
+    });
   // Send email to EMPLOYEE
   await sendMail({
     to: employee.email,
@@ -117,19 +119,20 @@ export const getpendingEmps = async (req, res) => {
   res.json(users);
 };
 export const uploadFile = async (req, res) => {
-  upload.single("profile_image"),
-    async (req, res) => {
+   if (!req.file) return res.status(400).json({ message: "No file uploaded" });
+
+  
       try {
         const emp = await Employee.findByIdAndUpdate(
           req.params.id,
-          { profile_image: req.file.filename },
+       { profile_image: `/uploads/${req.file.filename}` },
           { new: true }
         );
         res.json(emp);
       } catch (error) {
         res.status(500).json({ message: error.message });
       }
-    };
+    
 };
 
 // ===============================

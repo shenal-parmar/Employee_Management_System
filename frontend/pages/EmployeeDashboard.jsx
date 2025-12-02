@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { getCurrentUser } from "../src/api/userApi";
 import { useQuery } from "@tanstack/react-query";
+import toast from "react-hot-toast";
 import {
   FaCalendarAlt,
   FaDollarSign,
@@ -14,16 +15,15 @@ import {
 import { format } from "date-fns";
 import api from "../src/api/api.js";
 import { io } from "socket.io-client";
-import { toast } from "react-toastify";
+// import { toast } from "react-toastify";
+import { socket } from "../socket.js";
 
 export default function EmployeeDashboard() {
   const [user, setUser] = useState(null);
   const user1 = JSON.parse(localStorage.getItem("user"));
   const { id } = user1;
 
-  const socket = io(`${import.meta.env.VITE_API_URL?.replace(/\/$/, '')}`, {
-  transports: ["websocket"],
-});
+
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -31,11 +31,15 @@ export default function EmployeeDashboard() {
       setUser(currentUser);
     };
     fetchUser();
-    socket.on("notification", (data) => {
-      toast.info(data.message);
-    });
-    return () => socket.off("notification");
+    
   }, []);
+  useEffect(() => {
+  socket.on("notification", (data) => {
+    toast.info(data.message);
+  });
+
+  return () => socket.off("notification");
+}, []);
 
   const { data: leaves = [] } = useQuery({
     queryKey: ["myLeaves"],
