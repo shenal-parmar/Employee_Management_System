@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import api from "../src/api/api.js";
 import { FaSearch, FaPlus } from "react-icons/fa";
 
+
 export default function LeaveManagement({ userRole = "admin", employeeData }) {
   const [leaves, setLeaves] = useState([]);
   const [employees, setEmployees] = useState([]);
@@ -21,6 +22,18 @@ export default function LeaveManagement({ userRole = "admin", employeeData }) {
     reason: "",
     status: "Pending",
   });
+  const deleteLeave = async (leaveId) => {
+  if (!window.confirm("Are you sure you want to delete this leave?")) return;
+
+  try {
+    await api.delete(`/leaves/${leaveId}`);
+    toast.success("Leave deleted successfully!");
+    queryClient.invalidateQueries(["myLeaves"]); // refresh UI
+  } catch {
+    toast.error("Failed to delete leave");
+  }
+};
+
 
   // Fetch leaves
   const fetchLeaves = async () => {
