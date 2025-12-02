@@ -39,6 +39,17 @@ export default function AdminDashboard() {
         });
         return () => socket.off("notification");
   }, []);
+useEffect(() => {
+  socket.on("notification", (data) => {
+    if (data.type === "leave_applied") {
+      toast.success(data.message);  // Admin sees toast
+    }
+  });
+
+  return () => {
+    socket.off("notification");
+  };
+}, []);
 
   // Fetch data
   const { data: employees = [] } = useQuery({

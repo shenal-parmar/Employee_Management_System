@@ -32,13 +32,28 @@ export default function EmployeeDashboard() {
     };
     fetchUser();
     
+    
   }, []);
+  useEffect(() => {
+  if (user1?.id) {
+    socket.emit("join_room", user1.id);
+  }
+}, [user1]);
+
   useEffect(() => {
   socket.on("notification", (data) => {
     toast.info(data.message);
   });
 
-  return () => socket.off("notification");
+  // Specific to employee (approved/rejected)
+  socket.on("leave_status", (data) => {
+    toast.success(data.message);
+  });
+
+  return () => {
+    socket.off("notification");
+    socket.off("leave_status");
+  };
 }, []);
 
   const { data: leaves = [] } = useQuery({

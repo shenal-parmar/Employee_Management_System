@@ -75,6 +75,7 @@ export const approveEmp =  async (req, res) => {
     { status: "approved" },
     { new: true }
   );
+  alert("please assign department and salary to the employee")
   req.io.to(employee._id.toString()).emit("approved", {
       message: "Your account has been approved!",
     });
@@ -114,8 +115,6 @@ export const toggleStatus = async (req, res) => {
 export const getpendingEmps = async (req, res) => {
   const users = await Employee.find({ status: "pending" });
   const users1 = await Employee.find();
-  // console.log("pending : ", users);
-  // console.log("all : ", users1);
   res.json(users);
 };
 export const uploadFile = async (req, res) => {

@@ -101,13 +101,13 @@ export const updateLeaveStatus = async (req, res) => {
         .status(404)
         .json({ success: false, message: "Leave not found" });
     const subject =
-      updatedLeave.status === "approved"
+      updatedLeave.status?.toLowerCase() === "approved"
         ? "Your leave is approved"
         : "Your leave is rejected";
     console.log("updatedLeave", updatedLeave);
 
     const text =
-      updatedLeave.status === "approved"
+    updatedLeave.status?.toLowerCase() === "approved"
         ? `Hello ${updatedLeave.employee_name},\n\nYour leave request has been approved.`
         : `Hello ${updatedLeave.employee_name},\n\nYour leave request has been rejected.`;
 
@@ -148,13 +148,13 @@ export const updateLeave = async (req, res) => {
         .status(404)
         .json({ success: false, message: "Leave not found" });
     const subject =
-      updatedLeave.status === "approved"
+    updatedLeave.status?.toLowerCase() === "approved"
         ? "Your leave is approved"
         : "Your leave is rejected";
     console.log("updatedLeave", updatedLeave);
 
     const text =
-      updatedLeave.status === "approved"
+     updatedLeave.status?.toLowerCase() === "approved"
         ? `Hello ${updatedLeave.employee_name},\n\nYour leave request has been approved.`
         : `Hello ${updatedLeave.employee_name},\n\nYour leave request has been rejected.`;
 
