@@ -155,7 +155,7 @@ export default function EmployeeRegister() {
                 name="designation"
                 value={form.designation}
                 onChange={handleChange}
-                required
+                
                 placeholder="Ex: Software Developer"
                 className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-teal-500 outline-none"
               />
@@ -171,7 +171,7 @@ export default function EmployeeRegister() {
                 name="department"
                 value={form.department}
                 onChange={handleChange}
-                required
+                
                 placeholder="Mongo ObjectID of department"
                 className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-teal-500 outline-none"
               />
