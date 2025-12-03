@@ -14,9 +14,6 @@ import {
 } from "react-icons/fa";
 import { format } from "date-fns";
 import api from "../src/api/api.js";
-import { io } from "socket.io-client";
-// import { toast } from "react-toastify";
-import { socket } from "../socket.js";
 
 export default function EmployeeDashboard() {
   const [user, setUser] = useState(null);
@@ -34,27 +31,27 @@ export default function EmployeeDashboard() {
     
     
   }, []);
-  useEffect(() => {
-  if (user1?.id) {
-    socket.emit("join_room", user1.id);
-  }
-}, [user1]);
+//   useEffect(() => {
+//   if (user1?.id) {
+//     socket.emit("join_room", user1.id);
+//   }
+// }, [user1]);
 
-  useEffect(() => {
-  socket.on("notification", (data) => {
-    toast.info(data.message);
-  });
+//   useEffect(() => {
+//   socket.on("notification", (data) => {
+//     toast.info(data.message);
+//   });
 
-  // Specific to employee (approved/rejected)
-  socket.on("leave_status", (data) => {
-    toast.success(data.message);
-  });
+//   // Specific to employee (approved/rejected)
+//   socket.on("leave_status", (data) => {
+//     toast.success(data.message);
+//   });
 
-  return () => {
-    socket.off("notification");
-    socket.off("leave_status");
-  };
-}, []);
+//   return () => {
+//     socket.off("notification");
+//     socket.off("leave_status");
+//   };
+// }, []);
 
   const { data: leaves = [] } = useQuery({
     queryKey: ["myLeaves"],

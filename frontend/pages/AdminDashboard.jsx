@@ -18,11 +18,11 @@ import {
 import { format } from "date-fns";
 import { Link } from "react-router-dom";
 import api from "../src/api/api.js";
-import {io} from "socket.io-client"
+// import {io} from "socket.io-client"
 
-const socket = io(`${import.meta.env.VITE_API_URL?.replace(/\/$/, '')}`, {
-  transports: ["websocket"],
-});
+// const socket = io(`${import.meta.env.VITE_API_URL?.replace(/\/$/, '')}`, {
+//   transports: ["websocket"],
+// });
 
 export default function AdminDashboard() {
   const [user, setUser] = useState(null);
@@ -33,23 +33,23 @@ export default function AdminDashboard() {
       setUser(currentUser);
     };
     fetchUser();
-    socket.on("notification", (data) => {
-          console.log("Notification:", data);
-          toast.info(data.message);
-        });
-        return () => socket.off("notification");
+    // socket.on("notification", (data) => {
+    //       console.log("Notification:", data);
+    //       toast.info(data.message);
+    //     });
+    //     return () => socket.off("notification");
   }, []);
-useEffect(() => {
-  socket.on("notification", (data) => {
-    if (data.type === "leave_applied") {
-      toast.success(data.message);  // Admin sees toast
-    }
-  });
+// useEffect(() => {
+//   socket.on("notification", (data) => {
+//     if (data.type === "leave_applied") {
+//       toast.success(data.message);  // Admin sees toast
+//     }
+//   });
 
-  return () => {
-    socket.off("notification");
-  };
-}, []);
+//   return () => {
+//     socket.off("notification");
+//   };
+// }, []);
 
   // Fetch data
   const { data: employees = [] } = useQuery({

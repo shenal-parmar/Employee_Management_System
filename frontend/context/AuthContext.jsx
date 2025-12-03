@@ -3,17 +3,17 @@ import { useContext, useEffect } from "react";
 import { useState } from "react";
 import { createContext } from "react";
 import Login from "../pages/Login";
-const api = axios.create({
-  baseURL: `${import.meta.env.VITE_API_URL?.replace(/\/$/, "")}/api`,
-});
-api.interceptors.request.use((config) => {
-  const token = localStorage.getItem("token");
-  // console.log("TOKEN SENDING → ", token);
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  return config;
-});
+// const api = axios.create({
+//   baseURL: `${import.meta.env.VITE_API_URL?.replace(/\/$/, "")}/api`,
+// });
+// api.interceptors.request.use((config) => {
+//   const token = localStorage.getItem("token");
+//   // console.log("TOKEN SENDING → ", token);
+//   if (token) {
+//     config.headers.Authorization = `Bearer ${token}`;
+//   }
+//   return config;
+// });
 export const userContext = createContext();
 const AuthContext = ({ children }) => {
   const [user, setuser] = useState();

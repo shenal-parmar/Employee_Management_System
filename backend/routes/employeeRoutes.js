@@ -15,13 +15,24 @@ import {
   approveEmp
 } from "../controller/employeeController.js";
 import upload from "../middleware/upload.js";
+// Proper test stub for multer
+function safeUpload() {
+  if (process.env.NODE_ENV === "test") {
+    // Must be a proper middleware function
+    return (req, res, next) => {
+      req.file = undefined; // multer normally sets this
+      return next();
+    };
+  }
+  return upload.single("profile_image");
+}
 
 
 // CREATE
-router.post("/",  upload.single("profile_image"),createEmployee);
+router.post("/",safeUpload(),createEmployee);
 
-router.put("/:id/upload",upload.single("profile_image"), uploadFile);
-router.put("/approve/:id",approveEmp),
+router.put("/:id/upload",safeUpload(), uploadFile);
+router.put("/approve/:id",approveEmp)
 
 // READ ALL
 // GET /employees/pending

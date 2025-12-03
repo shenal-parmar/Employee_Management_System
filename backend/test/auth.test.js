@@ -1,7 +1,7 @@
 import request from "supertest";
 import mongoose from "mongoose";
 import { MongoMemoryServer } from "mongodb-memory-server";
-import app from "../server.js";
+import  app  from "../server.js";
 import User from "../models/UserModel.js"; 
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
@@ -45,7 +45,7 @@ describe("Auth API Tests", () => {
 
   it("should register a new user", async () => {
     const res = await request(app)
-      .post("/api/auth/register")
+      .post("/api/users/register")
       .send({
         name: "New User",
         email: "new@example.com",
@@ -61,7 +61,7 @@ describe("Auth API Tests", () => {
 
   it("should login with correct credentials", async () => {
     const res = await request(app)
-      .post("/api/auth/login")
+      .post("/api/users/login")
       .send({
         email: "test@example.com",
         password: "123456",
@@ -73,7 +73,7 @@ describe("Auth API Tests", () => {
 
   it("should NOT login with wrong password", async () => {
     const res = await request(app)
-      .post("/api/auth/login")
+      .post("/api/users/login")
       .send({
         email: "test@example.com",
         password: "wrongpass",

@@ -2,11 +2,11 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaUserCircle, FaBars, FaTimes } from "react-icons/fa";
 import { useAuth } from "../context/AuthContext";
-import { io } from "socket.io-client";
+// import { io } from "socket.io-client";
 
-const socket =  io(`${import.meta.env.VITE_API_URL?.replace(/\/$/, '')}`, {
-  transports: ["websocket"],
-});
+// const socket =  io(`${import.meta.env.VITE_API_URL?.replace(/\/$/, '')}`, {
+//   transports: ["websocket"],
+// });
 
 export default function Navbar() {
   const [notifications, setNotifications] = useState([]);
@@ -14,12 +14,12 @@ export default function Navbar() {
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
 
-  useEffect(() => {
-    socket.on("notification", (data) => {
-      setNotifications((prev) => [data, ...prev]);
-    });
-    return () => socket.off("notification");
-  }, []);
+  // useEffect(() => {
+  //   socket.on("notification", (data) => {
+  //     setNotifications((prev) => [data, ...prev]);
+  //   });
+  //   return () => socket.off("notification");
+  // }, []);
 
   const handleLogout = () => {
     logout();

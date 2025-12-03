@@ -1,7 +1,7 @@
 // controllers/leaveController.js
 
 import Leave from "../models/LeaveModel.js";
-import { io } from "../server.js";
+// import { io } from "../server.js";
 import { sendMail } from "../utils/MailService.js";
 
 // CREATE leave request
@@ -28,10 +28,10 @@ export const createLeave = async (req, res) => {
     });
 
     await newLeave.save();
-    io.emit("notification", {
-      type: "leave_applied",
-      message: `${req.body.employee_name} applied for leave`,
-    });
+    // io.emit("notification", {
+    //   type: "leave_applied",
+    //   message: `${req.body.employee_name} applied for leave`,
+    // });
 
     res.status(201).json({
       success: true,
@@ -165,13 +165,13 @@ export const updateLeave = async (req, res) => {
       text,
     });
     console.log(resemail);
-    io.emit("notification", {
-      type: "leave_status_updated",
-      message: `${updatedLeave.employee_name}'s leave is ${updatedLeave.status}`,
-    });
-    io.to(updatedLeave.emp_id._id.toString()).emit("leave_status", {
-      message: `Your leave request is ${updatedLeave.status}`,
-    });
+    // io.emit("notification", {
+    //   type: "leave_status_updated",
+    //   message: `${updatedLeave.employee_name}'s leave is ${updatedLeave.status}`,
+    // });
+    // io.to(updatedLeave.emp_id._id.toString()).emit("leave_status", {
+    //   message: `Your leave request is ${updatedLeave.status}`,
+    // });
 
     res.status(200).json({
       success: true,

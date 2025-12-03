@@ -1,10 +1,8 @@
 import dotenv from "dotenv"
 import express from "express"
 import http from "http"
-import { Server } from "socket.io"; 
 import cors from "cors"; 
 import morgan from "morgan"; 
-import mongoose from "mongoose"; 
 import leaveRoutes from "./routes/leaveRoutes.js"
 import authRoutes from "./routes/authRoutes.js"
 import deptRoutes from "./routes/departmentRoutes.js"
@@ -15,41 +13,13 @@ import { sendMail } from "./utils/MailService.js";
 
 dotenv.config();
 const app = express();
-
-// HTTP server for Socket.IO
-const server = http.createServer(app);
-
 // Allowed origins
 const allowedOrigins = [
   "http://localhost:5173",
   "https://employee-management-system-zeta-nine.vercel.app",
   "https://employee-management-system-dlm7.onrender.com",
 ];
-// console.log("BREVO API KEY:", process.env.BREVO_API_KEY);
 
-
-// SOCKET.IO
-export const io = new Server(server, {
-  cors: {
-    origin: allowedOrigins,
-    methods: ["GET", "POST"],
-    credentials: true,
-  },
-});
-
-io.on("connection", (socket) => {
-  console.log("User connected:", socket.id);
-
-  socket.on("join_room", (userId) => {
-    socket.join(userId);
-    console.log("User joined room:", userId);
-  });
-});
-
-app.use((req, res, next) => {
-  req.io = io;
-  next();
-});
 app.use(cors({
   origin: function (origin, callback) {
     if (!origin) return callback(null, true);
@@ -87,12 +57,9 @@ app.set("views", "./views");
 app.get("/server-home", (req, res) => {
   res.render("home");
 });
+if (process.env.NODE_ENV === "test") {
+  // Mock multer upload so Jest doesn't crash
+  global.uploadMock = (req, res, next) => next();
+}
 
-const PORT = process.env.PORT || 3000;
-
-mongoose
-  .connect(process.env.MONGO_URI)
-  .then(() => {
-    server.listen(PORT, () => console.log(`Backend running on port ${PORT}`));
-  })
-  .catch((err) => console.error(err));
+export default app;

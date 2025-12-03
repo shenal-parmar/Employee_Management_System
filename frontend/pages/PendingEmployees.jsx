@@ -1,7 +1,7 @@
 import React, { use, useEffect, useState } from "react";
 import api from "../src/api/api.js";
 import toast from "react-hot-toast";
-import { socket } from "../socket.js";
+// import { socket } from "../socket.js";
 
 
 export default function PendingEmployees() {
@@ -22,11 +22,11 @@ export default function PendingEmployees() {
     fetchPending();
   }, []);
  useEffect(() => {
-  socket.on("approved", (data) => {
-    toast.success(data.message);
-  });
+  // socket.on("approved", (data) => {
+  //   toast.success(data.message);
+  // });
 
-  return () => socket.off("approved");
+  // return () => socket.off("approved");
 }, []);
   const handleApprove = async (id) => {
   try {
