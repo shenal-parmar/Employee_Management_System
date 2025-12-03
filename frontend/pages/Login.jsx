@@ -10,7 +10,7 @@ export const submitLogin = async ({ email, password }) => {
     else throw new Error("Login failed");
   } catch (err) {
     if (err.response?.data?.error) throw new Error(err.response.data.error);
-    else throw new Error("Server error here");
+    else throw new Error("Server error "); 
   }
 };
 

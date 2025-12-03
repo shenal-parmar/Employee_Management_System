@@ -1,4 +1,5 @@
 import request from "supertest";
+// SET NODE_ENV=test && npm test
 import mongoose from "mongoose";
 import { MongoMemoryServer } from "mongodb-memory-server";
 import  app  from "../server.js";

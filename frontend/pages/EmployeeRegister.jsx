@@ -146,7 +146,7 @@ export default function EmployeeRegister() {
             </div>
 
             {/* Designation */}
-            <div className="col-span-1">
+            {/* <div className="col-span-1">
               <label className="block text-gray-700 font-medium mb-1">
                 Designation
               </label>
@@ -158,10 +158,10 @@ export default function EmployeeRegister() {
                 placeholder="Ex: Software Developer"
                 className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-teal-500 outline-none"
               />
-            </div>
+            </div> */}
 
-            {/* Department */}
-            <div className="col-span-1">
+            {/* Department*/}
+            {/* <div className="col-span-1">
               <label className="block text-gray-700 font-medium mb-1">
                 Department ID
               </label>
@@ -173,7 +173,7 @@ export default function EmployeeRegister() {
                 placeholder="Mongo ObjectID of department"
                 className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-teal-500 outline-none"
               />
-            </div>
+            </div>  */}
 
             {/* Date of Joining */}
             <div className="col-span-1 sm:col-span-2">

@@ -3,6 +3,7 @@ import { useContext, useEffect } from "react";
 import { useState } from "react";
 import { createContext } from "react";
 import Login from "../pages/Login";
+import api from "../src/api/api";
 // const api = axios.create({
 //   baseURL: `${import.meta.env.VITE_API_URL?.replace(/\/$/, "")}/api`,
 // });

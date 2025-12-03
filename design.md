@@ -73,15 +73,9 @@ const { data, isLoading } = useQuery(["user"], getCurrentUser);
 
 React Query implements:
 Caching
-
-
 Background refetching
-
-
 Data synchronization
 
-
-This is a library-provided pattern, but valid for submission.
 
 🎯 8. Strategy Pattern – Express Middlewares
 Used at:
@@ -95,15 +89,11 @@ Each middleware is a strategy that processes the request differently.
 🎯 9. Facade Pattern – API Wrapper Files
 Used at:
 userApi.js
-
-
 salaryApi.js
-
-
 api.js
 
 
-They hide axios complexity and expose simple functions:
+Hide axios complexity and expose simple functions:
 export const getUsers = () => api.get("/users");
 
 
