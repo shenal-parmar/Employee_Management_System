@@ -3,7 +3,6 @@ import DepartmentManagement from "../../pages/DepartmentManagement";
 import api from "../api/api.js";
 import { vi } from "vitest";
 
-// mock the default export
 vi.spyOn(api, "get").mockResolvedValue({
   data: [{ name: "IT" }, { name: "HR" }]
 });

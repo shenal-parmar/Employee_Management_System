@@ -1,9 +1,9 @@
-/* FULLY RESPONSIVE VERSION - CLEANED & IMPROVED */
-
 import React, { useEffect, useState } from "react";
 import { getCurrentUser } from "../src/api/userApi";
 import { useQuery } from "@tanstack/react-query";
 import toast from "react-hot-toast";
+import {  useQueryClient } from "@tanstack/react-query";
+
 import {
   FaCalendarAlt,
   FaDollarSign,
@@ -16,11 +16,10 @@ import { format } from "date-fns";
 import api from "../src/api/api.js";
 
 export default function EmployeeDashboard() {
+  const queryClient = useQueryClient();
   const [user, setUser] = useState(null);
   const user1 = JSON.parse(localStorage.getItem("user"));
   const { id } = user1;
-
-
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -28,30 +27,28 @@ export default function EmployeeDashboard() {
       setUser(currentUser);
     };
     fetchUser();
-    
-    
   }, []);
-//   useEffect(() => {
-//   if (user1?.id) {
-//     socket.emit("join_room", user1.id);
-//   }
-// }, [user1]);
+  //   useEffect(() => {
+  //   if (user1?.id) {
+  //     socket.emit("join_room", user1.id);
+  //   }
+  // }, [user1]);
 
-//   useEffect(() => {
-//   socket.on("notification", (data) => {
-//     toast.info(data.message);
-//   });
+  //   useEffect(() => {
+  //   socket.on("notification", (data) => {
+  //     toast.info(data.message);
+  //   });
 
-//   // Specific to employee (approved/rejected)
-//   socket.on("leave_status", (data) => {
-//     toast.success(data.message);
-//   });
+  //   // Specific to employee (approved/rejected)
+  //   socket.on("leave_status", (data) => {
+  //     toast.success(data.message);
+  //   });
 
-//   return () => {
-//     socket.off("notification");
-//     socket.off("leave_status");
-//   };
-// }, []);
+  //   return () => {
+  //     socket.off("notification");
+  //     socket.off("leave_status");
+  //   };
+  // }, []);
 
   const { data: leaves = [] } = useQuery({
     queryKey: ["myLeaves"],
@@ -132,23 +129,34 @@ export default function EmployeeDashboard() {
       alert("Error submitting leave");
     }
   };
+  const deleteLeave = async (id) => {
+    try {
+      await api.delete(`/leaves/${id}`);
+      toast.success("Leave deleted successfully!");
+
+      // Refresh leave list (React Query auto-updates)
+      queryClient.invalidateQueries(["myLeaves"]);
+    } catch (err) {
+      toast.error("Failed to delete leave");
+      console.error(err);
+    }
+  };
 
   return (
-    <main  className="p-4 sm:p-6 md:p-8 space-y-8 bg-gradient-to-br from-gray-50 to-blue-50 min-h-screen">
+    <main className="p-4 sm:p-6 md:p-8 space-y-8 bg-gradient-to-br from-gray-50 to-blue-50 min-h-screen">
       <section className="max-w-5xl mx-auto">
-        
         {/* Welcome */}
-        <header  className="mb-6 text-center sm:text-left">
+        <header className="mb-6 text-center sm:text-left">
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
             Welcome, {user?.name || "Employee"} 👋
           </h1>
           <p className="text-gray-600 mt-1">
             Here’s an overview of your work, leaves, and salary.
           </p>
-        </header >
+        </header>
 
         {/* Stats */}
-        <section  className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
+        <section className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
           <div className="bg-white shadow-md rounded-xl p-5 text-center">
             <FaCalendarAlt className="text-blue-600 text-3xl mb-2 mx-auto" />
             <p className="text-gray-500 text-sm">Pending Leaves</p>
@@ -168,10 +176,10 @@ export default function EmployeeDashboard() {
               ${totalPaidSalary.toLocaleString()}
             </p>
           </div>
-        </section >
+        </section>
 
         {/* My Leaves */}
-        <section  className="bg-white shadow-lg rounded-xl p-6 mt-8">
+        <section className="bg-white shadow-lg rounded-xl p-6 mt-8">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-2">
             <h2 className="text-lg sm:text-xl font-semibold flex items-center gap-2">
               <FaCalendarAlt className="text-blue-600" /> My Leaves
@@ -197,6 +205,7 @@ export default function EmployeeDashboard() {
                     <th className="px-4 py-3">From</th>
                     <th className="px-4 py-3">To</th>
                     <th className="px-4 py-3">Status</th>
+                    <th className="px-4 py-3">Delete</th>
                   </tr>
                 </thead>
 
@@ -221,23 +230,36 @@ export default function EmployeeDashboard() {
                       >
                         {l.status}
                       </td>
+                      {/* Delete button only if leave is still Pending */}
+                      <td className="px-4 py-2 ">
+                        {l.status === "Pending" && (
+                          <button
+                            className="text-red-600 font-semibold hover:underline"
+                            onClick={() => deleteLeave(l._id)}
+                          >
+                            Delete
+                          </button>
+                        ) || "N/A"} 
+                      </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             )}
           </div>
-        </section >
+        </section>
 
         {/* Salary */}
-        <section  className="bg-white shadow-lg rounded-xl p-6 mt-8">
+        <section className="bg-white shadow-lg rounded-xl p-6 mt-8">
           <h2 className="text-lg sm:text-xl font-semibold mb-4 flex items-center gap-2">
             <FaDollarSign className="text-green-600" /> Salary Details
           </h2>
 
           <div className="overflow-x-auto">
             {salaries.length === 0 ? (
-              <p className="text-gray-500 text-center">No salary records yet.</p>
+              <p className="text-gray-500 text-center">
+                No salary records yet.
+              </p>
             ) : (
               <table className="w-full text-sm border">
                 <thead className="bg-gray-100 text-xs uppercase">
@@ -269,10 +291,10 @@ export default function EmployeeDashboard() {
               </table>
             )}
           </div>
-        </section >
+        </section>
 
         {/* Recent Activity */}
-        <section  className="bg-white shadow-lg rounded-xl p-6 mt-8">
+        <section className="bg-white shadow-lg rounded-xl p-6 mt-8">
           <h2 className="text-lg sm:text-xl font-semibold mb-4 flex items-center gap-2">
             <FaChartBar className="text-blue-600" /> Recent Activity
           </h2>
@@ -291,14 +313,16 @@ export default function EmployeeDashboard() {
                     <p className="font-medium">{a.title}</p>
                     <p className="text-sm text-gray-500">{a.description}</p>
                     <p className="text-xs text-gray-400">
-                      {a.time ? format(new Date(a.time), "MMM dd, h:mm a") : "-"}
+                      {a.time
+                        ? format(new Date(a.time), "MMM dd, h:mm a")
+                        : "-"}
                     </p>
                   </div>
                 </div>
               ))
             )}
           </div>
-        </section >
+        </section>
 
         {/* Modal */}
         {showForm && (
@@ -333,9 +357,7 @@ export default function EmployeeDashboard() {
                 type="date"
                 className="w-full p-2 border rounded mb-3"
                 value={form.to_date}
-                onChange={(e) =>
-                  setForm({ ...form, to_date: e.target.value })
-                }
+                onChange={(e) => setForm({ ...form, to_date: e.target.value })}
               />
 
               <textarea
@@ -365,7 +387,6 @@ export default function EmployeeDashboard() {
             </div>
           </div>
         )}
-
       </section>
     </main>
   );

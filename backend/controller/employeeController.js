@@ -75,11 +75,9 @@ export const approveEmp =  async (req, res) => {
     { status: "approved" },
     { new: true }
   );
-  alert("please assign department and salary to the employee")
-  req.io.to(employee._id.toString()).emit("approved", {
-      message: "Your account has been approved!",
-    });
-  // Send email to EMPLOYEE
+  console.log("approve emp",employee);
+  console.log("approve emp email",employee.email);
+  
   await sendMail({
     to: employee.email,
     subject: "Registration Approved",

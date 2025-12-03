@@ -16,13 +16,11 @@ afterAll(async () => {
   await mongo.stop();
 });
 
-// Helper function to create a valid employee object
-// This ensures all required fields (like date_of_joining) are present
 const createValidEmployeeData = (overrides = {}) => ({
   name: "Default User",
   email: `default${Date.now()}@example.com`,
   password: "123456",
-  date_of_joining: new Date().toISOString(), // This is the crucial missing field in your original 'Update' and 'Delete' setup blocks
+  date_of_joining: new Date().toISOString(), 
   gender: "Male",
   marital_status: "Single",
   ...overrides,
@@ -30,7 +28,6 @@ const createValidEmployeeData = (overrides = {}) => ({
 
 describe("Employee CRUD Tests", () => {
   it("Create employee", async () => {
-    // This test case already passed, using the required fields.
     const res = await request(app)
       .post("/api/employees")
       .send({

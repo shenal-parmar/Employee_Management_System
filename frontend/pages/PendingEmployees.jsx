@@ -1,10 +1,13 @@
 import React, { use, useEffect, useState } from "react";
 import api from "../src/api/api.js";
 import toast from "react-hot-toast";
+import {useNavigate} from "react-router-dom"
 // import { socket } from "../socket.js";
 
 
+
 export default function PendingEmployees() {
+  const navigate = useNavigate();
   const [employees, setEmployees] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -30,10 +33,12 @@ export default function PendingEmployees() {
 }, []);
   const handleApprove = async (id) => {
   try {
-    await api.put(`/employees/approve/${id}`);
-    
+    const res1 = await api.put(`/employees/approve/${id}`);
     toast.success("Employee approved successfully!");
     setEmployees((prev) => prev.filter((e) => e._id !== id));
+    setTimeout(() => {
+      navigate("/employeeManagement");
+    }, 800);
   } catch (err) {
     console.error("Error approving employee:", err);
   }

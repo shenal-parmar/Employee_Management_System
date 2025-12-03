@@ -22,7 +22,6 @@ afterAll(async () => {
 describe("Auth API Tests", () => {
   let testUser;
   let token;
-  // Use a role that is valid according to UserModel.js enum: ["admin", "employee"]
   const VALID_TEST_ROLE = "admin"; 
 
   beforeAll(async () => {
@@ -32,11 +31,9 @@ describe("Auth API Tests", () => {
       name: "Test User",
       email: "test@example.com",
       password: hashedPassword,
-      // 💡 FIX: Set a valid role from the enum (e.g., "admin")
       role: VALID_TEST_ROLE, 
     });
 
-    // Generate JWT token manually
     token = jwt.sign(
       { id: testUser._id, role: testUser.role },
       process.env.JWT_SECRET || "testsecret",
@@ -51,9 +48,7 @@ describe("Auth API Tests", () => {
         name: "New User",
         email: "new@example.com",
         password: "123456",
-        // The register endpoint logic defaults to "admin" if role is missing, 
-        // but providing a valid role is safer for tests.
-        role: "employee", 
+        role: "admin", 
       });
 
     expect(res.statusCode).toBe(201);
@@ -91,7 +86,6 @@ describe("Auth API Tests", () => {
     expect(res.statusCode).toBe(200);
     expect(res.body).toHaveProperty("success", true);
     expect(res.body).toHaveProperty("user");
-    // 💡 FIX: Expect the valid role used in the setup
     expect(res.body).toHaveProperty("role", VALID_TEST_ROLE); 
   });
 });

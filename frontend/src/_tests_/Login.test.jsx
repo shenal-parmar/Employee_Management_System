@@ -3,12 +3,11 @@ import { MemoryRouter } from "react-router-dom";
 import { vi, test, expect, beforeEach } from "vitest";
 import { userContext } from "../../context/AuthContext";
 import Login from "../../pages/Login.jsx";
-import api from "../../src/api/api.js"; // axios instance
+import api from "../../src/api/api.js"; 
 
 const mockLogin = vi.fn();
 const mockNavigate = vi.fn();
 
-// Mock react-router-dom
 vi.mock("react-router-dom", async () => {
   const actual = await vi.importActual("react-router-dom");
   return {
@@ -17,7 +16,6 @@ vi.mock("react-router-dom", async () => {
   };
 });
 
-// Context wrapper
 const MockAuthProvider = ({ children }) => (
   <userContext.Provider value={{ login: mockLogin }}>
     {children}
@@ -28,7 +26,6 @@ beforeEach(() => {
   mockLogin.mockReset();
   mockNavigate.mockReset();
 
-  // Spy on api.post for each test
   vi.spyOn(api, "post").mockResolvedValue({
     data: {
       success: true,
